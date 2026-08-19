@@ -98,37 +98,21 @@ Whichever model you pick, finetuning it on your genome adapts it to your species
 [Finetuning](#finetuning-recommended).
 
 The species every model was trained on are listed in
-[configs/training_species.tsv](/configs/training_species.tsv), one row per species with its NCBI
+[docs/training_species.tsv](/docs/training_species.tsv), one row per species with its NCBI
 assembly accession. Since Vipsania never learns from annotations, the quality of a species'
 reference annotation, or whether it has one at all, leaves no trace in the model, and unlike for a
 supervised gene finder, finding your species or a close relative in the list is not an argument
 against that model.
 
 The test species behind the two F1 columns are in
-[configs/test_species.tsv](/configs/test_species.tsv), with precision, sensitivity and F1 at base,
+[docs/test_species.tsv](/docs/test_species.tsv), with precision, sensitivity and F1 at base,
 exon and locus level for each of them, once with and once without finetuning.
 
 ### Where models are stored
 
-Downloaded models are placed in `$XDG_CACHE_HOME/vipsania/models`, or in `~/.cache/vipsania/models`
-if that variable is not set. They are shared between all your environments and survive reinstalling
-Vipsania. Set `VIPSANIA_CACHE` to store them somewhere else, which is worth doing on clusters with
-a small home quota:
-
-    $ export VIPSANIA_CACHE=/scratch/$USER/vipsania
-
-Models are fetched when they are first used, so normally there is nothing to prepare. If the
-machine that runs the annotation has no internet access, `vipsania download` fetches a model in
-advance — on a login node, for instance, before submitting the job:
-
-    $ vipsania download 58hsuobw
-
-Without further options this fills exactly the cache the annotation reads from, so the annotation
-command stays the same. To collect models somewhere else, for example in a directory shared by a
-whole group, give a target directory and pass it to the annotation as `--model_dir`:
-
-    $ vipsania download 58hsuobw faeijtmk --dir /shared/vipsania_models
-    $ vipsania annotate 58hsuobw genome.fa -o annotation.gff3 --model_dir /shared/vipsania_models
+The first time a model ID is used it is downloaded into `~/.cache/vipsania/models` and read from
+there ever after. See [docs/download.md](/docs/download.md) for changing that location, and for
+fetching models in advance on machines that have no internet access when they annotate.
 
 ### Output formats
 
@@ -157,7 +141,7 @@ The finetuned checkpoint is saved next to the output file, so you can reuse it f
 annotations of the same genome or closely related species without finetuning again. Use the
 `--model_dir` argument in these cases.
 
-All options of the annotation are listed in [scripts/README.md](/scripts/README.md), or with
+All options of the annotation are listed in [docs/annotate.md](/docs/annotate.md), or with
 `vipsania annotate --help`.
 
 ## Training
@@ -175,7 +159,7 @@ Everything a run produces — configuration, checkpoints and metrics — is writ
 expects.
 
 Because training is unsupervised, you only need genome sequences. See
-[scripts/README.md](/scripts/README.md) for the configuration format, data preparation, resuming
+[docs/training.md](/docs/training.md) for the configuration format, data preparation, resuming
 runs, multi-GPU training and the available options in detail.
 
 ## Built on

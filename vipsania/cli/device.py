@@ -6,7 +6,7 @@ NO_GPU_WARNING = """\
 !!
 !! If this machine does have a GPU, TensorFlow was unable to load its CUDA
 !! libraries. Run the command again with TF_CPP_MIN_LOG_LEVEL=0 to see which
-!! library failed, and see the troubleshooting section in scripts/README.md.
+!! library failed, and see docs/troubleshooting.md in the Vipsania repository.
 """
 
 

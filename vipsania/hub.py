@@ -22,9 +22,8 @@ environment variable ``VIPSANIA_MODEL_URL``."""
 CONFIG_NAME = "config.json"
 WEIGHTS_NAME = "latest_checkpoint.weights.h5"
 MODEL_FILES = (CONFIG_NAME, WEIGHTS_NAME)
-"""The files a pretrained model consists of. A training run also
-produces weights that carry the optimizer state, but those are only of
-use for continuing that very run and are not published."""
+"""The files a pretrained model has to contain. A model folder may hold
+more than these, but without them it cannot be used."""
 
 
 def base_url() -> str:
@@ -117,7 +116,9 @@ def download_model(
     The model is first looked for as a folder of individual files and
     then as a zip archive. Nothing is written to `root` until the
     download has completed, so an interrupted download does not leave a
-    partial model behind.
+    partial model behind. Several processes may download the same model
+    at once, as annotation jobs started together do; whichever finishes
+    first publishes its copy and the others keep that one.
     """
     root = cache_dir() if root is None else Path(root).expanduser()
     if not force and is_available(model_id, root):
@@ -144,9 +145,29 @@ def download_model(
             for leftover in staging.iterdir(): leftover.unlink()
             _download_archive(f"{url}.zip", staging, quiet=quiet)
 
+        incomplete = [
+            name for name in MODEL_FILES
+            if not (staging / name).is_file()
+            or (staging / name).stat().st_size == 0
+        ]
+        if incomplete:
+            raise FileNotFoundError(
+                f"The model {model_id!r} downloaded from {url} is incomplete: "
+                f"{', '.join(incomplete)} missing or empty. Try again, and "
+                "report it if the download keeps arriving damaged."
+            )
+
         target = root / model_id
-        if target.exists(): shutil.rmtree(target)
-        os.replace(staging, target)
+        if force and target.exists():
+            shutil.rmtree(target, ignore_errors=True)
+        try:
+            os.replace(staging, target)
+        except OSError:
+            # Another process downloaded the same model at the same time and
+            # published it first. Its files are the same as ours, so keep them
+            # rather than replacing a model that others may already be reading.
+            if not is_available(model_id, root):
+                raise
     except urllib.error.HTTPError as e:
         raise FileNotFoundError(
             f"No pretrained model {model_id!r} at {base_url()} "

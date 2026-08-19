@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vipsania"
+version = "1.0.0"
+authors = [
+  { name="Richard Krieg", email="irkri@irkri.net" },
+  { name="Mario Stanke", email="mario.stanke@uni-greifswald.de" },
+]
+description = "An unsupervised deep learning ab-initio gene finder."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = [
+    "gene finding",
+    "genome annotation",
+    "bioinformatics",
+    "unsupervised learning",
+    "masked language modelling",
+    "hidden Markov model",
+    "deep learning",
+    "genome foundation model",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "bricks2marble[tf]",
+    "tensorflow<2.20",
+    "wandb"
+]
+
+[project.scripts]
+vipsania = "vipsania.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/gaius-augustus/vipsania"
+Issues = "https://github.com/gaius-augustus/vipsania/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["vipsania"]

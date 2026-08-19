@@ -1,0 +1,109 @@
+{
+    "model": {
+        "n_layers": 10,
+        "d_hidden": 256,
+        "stripes": [["lru"], ["ffn"], ["hmm"]],
+        "restrict_stripes": {"2": [4]},
+
+        "spliced_loss": {
+            "source": ["site", "site", "outer", "inner"],
+            "weight": [0.05, 0.0, 0.0, 0.0],
+            "adaptk": [[0.01, 100], null, null, null],
+            "target": ["position", "position", "position", "position"]
+        },
+
+        "input_repeat_masked": true,
+
+        "lru": {
+            "embed_norm": "layer",
+            "readout": true,
+            "readout_norm": "layer",
+            "pre_readout_activation": "swish",
+
+            "d_latent": 256,
+            "init_radius": [[0.0, 1.0], [0.0, 1.0], [0.0, 1.0]],
+            "init_phase": [[1.047, 2.094], [3.142, 4.189], [5.236, 6.283]],
+            "init_mixing_ratio": [0.34, 0.33, 0.33],
+            "initial_state_memory": 0.99,
+            "max_tree_depth": 18
+        },
+        "hmm": {
+            "embed": 128,
+            "embed_norm": "layer",
+            "embed_activation": "softmax",
+            "readout": true,
+            "readout_type": "conv",
+            "readout_conv_kernel": 9,
+
+            "intron_state_chain": 2,
+            "intron_chain_starts": true,
+            "intron_chain_skips": true,
+            "intron_chain_loop": false,
+            "intron_chain_transitions": false,
+
+            "parallel_factor": 125,
+            "use_reverse_strand": true,
+            "emitter_share_noncoding": true,
+            "emitter_share_frames": true,
+            "train_emitter": true,
+            "initial_exon_len": 1000,
+            "initial_intron_len": [100, 10000],
+            "initial_ir_len": 10000,
+            "transitioner_share_noncoding": false,
+            "transitioner_share_frames": true,
+            "train_transitions": true,
+            "train_start_dist": true
+        },
+        "ffn": {
+            "embed_norm": "layer",
+
+            "type": "glu",
+            "units": 512,
+            "activation_hidden": "swish"
+        }
+    },
+
+    "dataset": {
+        "T": 20000,
+        "B": 8,
+
+        "masking": 0.05,
+        "token": 1.0,
+        "same": 0,
+        "false": 0,
+
+        "repeats_loss_weight": 1e-4,
+        "drop_N_threshold": 0.001,
+        "drop_repeats_threshold": 0,
+
+        "train_paths": [],
+        "train_files_at_once": 25,
+        "indexed_files": true
+    },
+
+    "trainer": {
+        "epochs": 1000,
+        "train_steps": 800,
+
+        "start_lr": 1e-7,
+        "warmup_final_lr": 1e-3,
+        "lr": 5e-4,
+        "warmup_steps": 10,
+        "decay_steps": 90,
+
+        "no_weight_decay": [
+            "bias", "beta", "gamma", "annotation", "nu_log", "theta_log", "B_re", "B_im"
+        ],
+        "gradient_clip_norm": 1.0,
+        "gradient_accumulation_steps": 8,
+
+        "hyperparameter_schedule": [{
+            "parameter": "spliced_loss_adapter.loss_weights",
+            "list_index": 0,
+            "start": 0.0,
+            "idle": 100,
+            "target": 0.05,
+            "warmup": 5
+        }]
+    }
+}

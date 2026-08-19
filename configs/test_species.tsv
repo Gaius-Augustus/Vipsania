@@ -1,0 +1,267 @@
+clade	model_id	species	assembly_accession	mode	base_precision	base_sensitivity	base_f1	exon_precision	exon_sensitivity	exon_f1	locus_precision	locus_sensitivity	locus_f1
+Alveolata	sd2zcj7u	Babesia bigemina	GCF_000981445.1	finetuned	0.9420	0.8600	0.8991	0.6820	0.7070	0.6943	0.5400	0.5120	0.5256
+Alveolata	sd2zcj7u	Babesia bigemina	GCF_000981445.1	pretrained	0.9430	0.8620	0.9007	0.6830	0.7070	0.6948	0.5410	0.5130	0.5266
+Alveolata	sd2zcj7u	Besnoitia besnoiti	GCF_002563875.1	finetuned	0.9380	0.9580	0.9479	0.8220	0.8250	0.8235	0.4990	0.4840	0.4914
+Alveolata	sd2zcj7u	Besnoitia besnoiti	GCF_002563875.1	pretrained	0.9520	0.9460	0.9490	0.8390	0.8110	0.8248	0.5090	0.4640	0.4855
+Alveolata	sd2zcj7u	Cryptosporidium meleagridis	GCA_039657295.1	finetuned	0.9790	0.9940	0.9864	0.8770	0.8870	0.8820	0.8740	0.8700	0.8720
+Alveolata	sd2zcj7u	Cryptosporidium meleagridis	GCA_039657295.1	pretrained	0.9790	0.9940	0.9864	0.8760	0.8860	0.8810	0.8730	0.8690	0.8710
+Alveolata	sd2zcj7u	Plasmodium falciparum	GCF_000002765.6	finetuned	0.9810	0.9900	0.9855	0.9120	0.9200	0.9160	0.8440	0.8700	0.8568
+Alveolata	sd2zcj7u	Plasmodium falciparum	GCF_000002765.6	pretrained	0.9800	0.9550	0.9673	0.8120	0.6550	0.7251	0.6810	0.6680	0.6744
+Alveolata	sd2zcj7u	Theileria annulata	GCF_000003225.4	finetuned	0.9610	0.9720	0.9665	0.6800	0.7690	0.7218	0.4910	0.5140	0.5022
+Alveolata	sd2zcj7u	Theileria annulata	GCF_000003225.4	pretrained	0.9600	0.9730	0.9665	0.6800	0.7690	0.7218	0.4890	0.5130	0.5007
+Alveolata	sd2zcj7u	Theileria orientalis strain shintoku	GCF_000740895.1	finetuned	0.9300	0.9740	0.9515	0.6950	0.6830	0.6889	0.4340	0.4300	0.4320
+Alveolata	sd2zcj7u	Theileria orientalis strain shintoku	GCF_000740895.1	pretrained	0.9300	0.9740	0.9515	0.6940	0.6830	0.6885	0.4330	0.4290	0.4310
+Amoebozoa	ezhpj2qm	Acanthamoeba castellanii str. neff	GCF_000313135.1	finetuned	0.8380	0.9350	0.8838	0.6840	0.7310	0.7067	0.2590	0.2570	0.2580
+Amoebozoa	ezhpj2qm	Acanthamoeba castellanii str. neff	GCF_000313135.1	pretrained	0.8370	0.9350	0.8833	0.6840	0.7300	0.7063	0.2580	0.2560	0.2570
+Amoebozoa	ezhpj2qm	Acytostelium subglobosum lb1	GCF_000787575.1	finetuned	0.8690	0.9830	0.9225	0.6120	0.6690	0.6392	0.3560	0.3770	0.3662
+Amoebozoa	ezhpj2qm	Acytostelium subglobosum lb1	GCF_000787575.1	pretrained	0.8690	0.9830	0.9225	0.6120	0.6690	0.6392	0.3560	0.3780	0.3667
+Amoebozoa	ezhpj2qm	Cavenderia fasciculata	GCF_000203815.1	finetuned	0.9430	0.9650	0.9539	0.6850	0.5990	0.6391	0.4180	0.4300	0.4239
+Amoebozoa	ezhpj2qm	Cavenderia fasciculata	GCF_000203815.1	pretrained	0.9430	0.9650	0.9539	0.6860	0.5990	0.6396	0.4180	0.4310	0.4244
+Amoebozoa	ezhpj2qm	Dictyostelium discoideum	GCF_000004695.1	finetuned	0.9650	0.9820	0.9734	0.8210	0.8110	0.8160	0.7710	0.7460	0.7583
+Amoebozoa	ezhpj2qm	Dictyostelium discoideum	GCF_000004695.1	pretrained	0.9670	0.9760	0.9715	0.8170	0.7930	0.8048	0.7650	0.7200	0.7418
+Amoebozoa	ezhpj2qm	Entamoeba invadens	GCF_000330505.1	finetuned	0.7780	0.9490	0.8550	0.4090	0.5620	0.4734	0.4360	0.5490	0.4860
+Amoebozoa	ezhpj2qm	Entamoeba invadens	GCF_000330505.1	pretrained	0.7920	0.8750	0.8314	0.2830	0.3350	0.3068	0.3520	0.3660	0.3589
+Amoebozoa	ezhpj2qm	Heterostelium album pn500	GCF_000004825.1	finetuned	0.9230	0.9630	0.9426	0.6420	0.5360	0.5842	0.3580	0.3710	0.3644
+Amoebozoa	ezhpj2qm	Heterostelium album pn500	GCF_000004825.1	pretrained	0.9240	0.9620	0.9426	0.6430	0.5360	0.5846	0.3600	0.3710	0.3654
+Amoebozoa	ezhpj2qm	Pelomyxa schiedti	GCA_020536535.1	finetuned	0.8930	0.8480	0.8699	0.8410	0.7390	0.7867	0.4380	0.3740	0.4035
+Amoebozoa	ezhpj2qm	Pelomyxa schiedti	GCA_020536535.1	pretrained	0.8940	0.8490	0.8709	0.8380	0.7400	0.7860	0.4340	0.3720	0.4006
+Arthropoda	ihe1jk30	Artemia franciscana	GCF_032884065.1	finetuned	0.9090	0.6860	0.7819	0.8700	0.6250	0.7274	0.3590	0.1990	0.2561
+Arthropoda	ihe1jk30	Artemia franciscana	GCF_032884065.1	pretrained	0.8960	0.6630	0.7621	0.8240	0.6260	0.7115	0.2980	0.1860	0.2290
+Arthropoda	ihe1jk30	Cherax quadricarinatus	GCF_038502225.1	finetuned	0.9020	0.7160	0.7983	0.8450	0.6270	0.7199	0.3200	0.2470	0.2788
+Arthropoda	ihe1jk30	Cherax quadricarinatus	GCF_038502225.1	pretrained	0.9030	0.6900	0.7823	0.8410	0.5970	0.6983	0.3000	0.2270	0.2584
+Arthropoda	ihe1jk30	Dermacentor silvarum	GCF_013339745.2	finetuned	0.7420	0.6750	0.7069	0.7060	0.6500	0.6768	0.2640	0.1940	0.2237
+Arthropoda	ihe1jk30	Dermacentor silvarum	GCF_013339745.2	pretrained	0.7570	0.6220	0.6829	0.7160	0.5830	0.6427	0.2380	0.1580	0.1899
+Arthropoda	ihe1jk30	Parasteatoda tepidariorum	GCF_043381705.1	finetuned	0.9080	0.5610	0.6935	0.8850	0.4450	0.5922	0.2570	0.1170	0.1608
+Arthropoda	ihe1jk30	Parasteatoda tepidariorum	GCF_043381705.1	pretrained	0.8960	0.8030	0.8470	0.8610	0.7670	0.8113	0.3760	0.2940	0.3300
+Arthropoda	ihe1jk30	Penaeus monodon	GCF_015228065.2	finetuned	0.8550	0.6490	0.7379	0.7590	0.5480	0.6365	0.2880	0.1670	0.2114
+Arthropoda	ihe1jk30	Penaeus monodon	GCF_015228065.2	pretrained	0.8300	0.7100	0.7653	0.7330	0.5900	0.6538	0.2750	0.1820	0.2190
+Arthropoda	ihe1jk30	Pycnogonum litorale	GCA_964442445.1	finetuned	0.8470	0.6010	0.7031	0.7150	0.5440	0.6179	0.1270	0.0980	0.1106
+Arthropoda	ihe1jk30	Pycnogonum litorale	GCA_964442445.1	pretrained	0.8340	0.5720	0.6786	0.7050	0.5070	0.5898	0.0950	0.0650	0.0772
+Chlorophyta	faeijtmk	Chlamydomonas reinhardtii	GCF_000002595.2	finetuned	0.9120	0.9760	0.9429	0.9210	0.9160	0.9185	0.6200	0.6060	0.6129
+Chlorophyta	faeijtmk	Chlamydomonas reinhardtii	GCF_000002595.2	pretrained	0.9040	0.9590	0.9307	0.8920	0.8790	0.8855	0.4910	0.4930	0.4920
+Chlorophyta	faeijtmk	Micromonas commoda	GCF_000090985.2	finetuned	0.8420	0.9850	0.9079	0.5870	0.5910	0.5890	0.5430	0.5610	0.5519
+Chlorophyta	faeijtmk	Micromonas commoda	GCF_000090985.2	pretrained	0.8420	0.9850	0.9079	0.5860	0.5890	0.5875	0.5420	0.5600	0.5509
+Chlorophyta	faeijtmk	Ostreococcus tauri	GCF_000214015.3	finetuned	0.9690	0.9910	0.9799	0.7340	0.7530	0.7434	0.7150	0.7250	0.7200
+Chlorophyta	faeijtmk	Ostreococcus tauri	GCF_000214015.3	pretrained	0.9690	0.9910	0.9799	0.7320	0.7500	0.7409	0.7160	0.7240	0.7200
+Chlorophyta	faeijtmk	Pseudoscourfieldia marina	GCA_049488355.1	finetuned	0.9610	0.9500	0.9555	0.6790	0.6440	0.6610	0.7100	0.6680	0.6884
+Chlorophyta	faeijtmk	Pseudoscourfieldia marina	GCA_049488355.1	pretrained	0.9610	0.9430	0.9519	0.6790	0.6400	0.6589	0.7100	0.6630	0.6857
+Chlorophyta	faeijtmk	Pycnococcus provasolii	GCA_049487715.1	finetuned	0.9560	0.9810	0.9683	0.6010	0.6090	0.6050	0.6460	0.6240	0.6348
+Chlorophyta	faeijtmk	Pycnococcus provasolii	GCA_049487715.1	pretrained	0.9560	0.9800	0.9679	0.6000	0.6070	0.6035	0.6450	0.6230	0.6338
+Chlorophyta	faeijtmk	Tetradesmus obliquus	GCA_030272155.1	finetuned	0.5960	0.9770	0.7404	0.7540	0.7640	0.7590	0.2400	0.3020	0.2675
+Chlorophyta	faeijtmk	Tetradesmus obliquus	GCA_030272155.1	pretrained	0.5990	0.9750	0.7421	0.7510	0.7620	0.7565	0.2390	0.2930	0.2633
+Cnidaria	b5vtieo0	Acropora digitifera	GCF_000222465.1	finetuned	0.7790	0.7370	0.7574	0.6950	0.6390	0.6658	0.2730	0.1970	0.2289
+Cnidaria	b5vtieo0	Acropora digitifera	GCF_000222465.1	pretrained	0.7830	0.7220	0.7513	0.7050	0.6190	0.6592	0.2670	0.1870	0.2200
+Cnidaria	b5vtieo0	Hydra vulgaris	GCF_038396675.1	finetuned	0.9200	0.6360	0.7521	0.8780	0.7030	0.7808	0.4840	0.2570	0.3357
+Cnidaria	b5vtieo0	Hydra vulgaris	GCF_038396675.1	pretrained	0.9280	0.4420	0.5988	0.8790	0.4730	0.6150	0.3170	0.1180	0.1720
+Cnidaria	b5vtieo0	Hydractinia symbiolongicarpus	GCF_029227915.1	finetuned	0.8940	0.8160	0.8532	0.8840	0.8340	0.8583	0.5610	0.4930	0.5248
+Cnidaria	b5vtieo0	Hydractinia symbiolongicarpus	GCF_029227915.1	pretrained	0.8960	0.7870	0.8380	0.8820	0.7890	0.8329	0.4850	0.3880	0.4311
+Cnidaria	b5vtieo0	Montipora capricornis	GCF_036669925.1	finetuned	0.8820	0.6560	0.7524	0.8560	0.7450	0.7967	0.4860	0.2910	0.3640
+Cnidaria	b5vtieo0	Montipora capricornis	GCF_036669925.1	pretrained	0.8580	0.6960	0.7686	0.8340	0.7590	0.7947	0.4550	0.3280	0.3812
+Cnidaria	b5vtieo0	Montipora foliosa	GCF_036669935.1	finetuned	0.8910	0.6790	0.7707	0.8670	0.7710	0.8162	0.5160	0.3300	0.4026
+Cnidaria	b5vtieo0	Montipora foliosa	GCF_036669935.1	pretrained	0.8730	0.7030	0.7788	0.8550	0.7700	0.8103	0.4790	0.3470	0.4025
+Cnidaria	b5vtieo0	Nematostella vectensis	GCF_932526225.1	finetuned	0.9400	0.8900	0.9143	0.9240	0.8760	0.8994	0.6260	0.5930	0.6091
+Cnidaria	b5vtieo0	Nematostella vectensis	GCF_932526225.1	pretrained	0.9420	0.8600	0.8991	0.9290	0.8270	0.8750	0.5470	0.4750	0.5085
+Cnidaria	b5vtieo0	Oculina patagonica	GCF_052425735.1	finetuned	0.8580	0.8270	0.8422	0.8510	0.8400	0.8455	0.5420	0.4940	0.5169
+Cnidaria	b5vtieo0	Oculina patagonica	GCF_052425735.1	pretrained	0.8600	0.8280	0.8437	0.8560	0.8290	0.8423	0.5330	0.4830	0.5068
+Cnidaria	b5vtieo0	Pocillopora verrucosa	GCF_036669915.1	finetuned	0.8690	0.8970	0.8828	0.8420	0.8670	0.8543	0.5420	0.5420	0.5420
+Cnidaria	b5vtieo0	Pocillopora verrucosa	GCF_036669915.1	pretrained	0.8830	0.8660	0.8744	0.8600	0.8370	0.8483	0.5240	0.4760	0.4988
+Cnidaria	b5vtieo0	Porites lutea	GCF_958299795.1	finetuned	0.8260	0.8070	0.8164	0.8170	0.8450	0.8308	0.4830	0.4320	0.4561
+Cnidaria	b5vtieo0	Porites lutea	GCF_958299795.1	pretrained	0.8210	0.8170	0.8190	0.8140	0.8370	0.8253	0.4630	0.4270	0.4443
+Cnidaria	b5vtieo0	Rhopilema esculentum	GCF_013076305.1	finetuned	0.9280	0.8660	0.8959	0.9160	0.8820	0.8987	0.5690	0.5360	0.5520
+Cnidaria	b5vtieo0	Rhopilema esculentum	GCF_013076305.1	pretrained	0.9280	0.8530	0.8889	0.9130	0.8580	0.8846	0.5220	0.4620	0.4902
+Discoba	gcra9d9y	Angomonas deanei	GCA_903995115.1	finetuned	0.7730	0.9650	0.8584	0.3790	0.4700	0.4196	0.5060	0.4700	0.4873
+Discoba	gcra9d9y	Angomonas deanei	GCA_903995115.1	pretrained	0.7710	0.9640	0.8568	0.3770	0.4690	0.4180	0.5040	0.4690	0.4859
+Discoba	gcra9d9y	Leishmania major	GCF_000002725.2	finetuned	0.9580	0.9700	0.9640	0.7260	0.7420	0.7339	0.7410	0.7420	0.7415
+Discoba	gcra9d9y	Leishmania major	GCF_000002725.2	pretrained	0.9560	0.9700	0.9629	0.7120	0.7390	0.7252	0.7370	0.7390	0.7380
+Discoba	gcra9d9y	Porcisia hertigi	GCF_017918235.1	finetuned	0.8390	0.9730	0.9010	0.6820	0.7910	0.7325	0.7480	0.8280	0.7860
+Discoba	gcra9d9y	Porcisia hertigi	GCF_017918235.1	pretrained	0.8410	0.9720	0.9018	0.6830	0.7890	0.7322	0.7490	0.8260	0.7856
+Discoba	gcra9d9y	Trypanosoma brucei brucei treu927	GCF_000002445.2	finetuned	0.9180	0.9370	0.9274	0.6640	0.7530	0.7057	0.7890	0.7530	0.7706
+Discoba	gcra9d9y	Trypanosoma brucei brucei treu927	GCF_000002445.2	pretrained	0.9190	0.9370	0.9279	0.6710	0.7540	0.7101	0.7920	0.7540	0.7725
+Echinodermata	sx9zjl7p	Amphiura filiformis	GCF_039555335.1	finetuned	0.6780	0.7090	0.6932	0.7440	0.7350	0.7395	0.2880	0.2420	0.2630
+Echinodermata	sx9zjl7p	Amphiura filiformis	GCF_039555335.1	pretrained	0.6720	0.8100	0.7346	0.7240	0.8010	0.7606	0.3130	0.3230	0.3179
+Echinodermata	sx9zjl7p	Antedon bifida	GCF_963402885.1	finetuned	0.8200	0.9330	0.8729	0.8460	0.8910	0.8679	0.5190	0.5530	0.5355
+Echinodermata	sx9zjl7p	Antedon bifida	GCF_963402885.1	pretrained	0.8160	0.9300	0.8693	0.8370	0.8850	0.8603	0.4970	0.5230	0.5097
+Echinodermata	sx9zjl7p	Antedon mediterranea	GCF_964355755.1	finetuned	0.8320	0.8940	0.8619	0.8420	0.8800	0.8606	0.5090	0.5020	0.5055
+Echinodermata	sx9zjl7p	Antedon mediterranea	GCF_964355755.1	pretrained	0.8090	0.9190	0.8605	0.8270	0.8840	0.8546	0.4840	0.5080	0.4957
+Echinodermata	sx9zjl7p	Apostichopus japonicus	GCF_037975245.1	finetuned	0.9070	0.8910	0.8989	0.8990	0.8480	0.8728	0.5660	0.5210	0.5426
+Echinodermata	sx9zjl7p	Apostichopus japonicus	GCF_037975245.1	pretrained	0.9050	0.8890	0.8969	0.8920	0.8410	0.8657	0.5370	0.4820	0.5080
+Echinodermata	sx9zjl7p	Asterias rubens	GCF_902459465.1	finetuned	0.9050	0.9250	0.9149	0.9080	0.8890	0.8984	0.5780	0.5650	0.5714
+Echinodermata	sx9zjl7p	Asterias rubens	GCF_902459465.1	pretrained	0.9000	0.9200	0.9099	0.9020	0.8850	0.8934	0.5610	0.5350	0.5477
+Echinodermata	sx9zjl7p	Holothuria leucospilota	GCA_029531755.1	finetuned	0.8290	0.6970	0.7573	0.7490	0.7250	0.7368	0.3170	0.1830	0.2320
+Echinodermata	sx9zjl7p	Holothuria leucospilota	GCA_029531755.1	pretrained	0.8270	0.7190	0.7692	0.7450	0.7350	0.7400	0.3140	0.1910	0.2375
+Echinodermata	sx9zjl7p	Lytechinus pictus	GCF_037042905.1	finetuned	0.9000	0.8750	0.8873	0.8770	0.8640	0.8705	0.5110	0.4420	0.4740
+Echinodermata	sx9zjl7p	Lytechinus pictus	GCF_037042905.1	pretrained	0.8910	0.8940	0.8925	0.8640	0.8740	0.8690	0.5020	0.4520	0.4757
+Echinodermata	sx9zjl7p	Strongylocentrotus purpuratus	GCF_000002235.5	finetuned	0.7730	0.8640	0.8160	0.7700	0.8410	0.8039	0.4360	0.4170	0.4263
+Echinodermata	sx9zjl7p	Strongylocentrotus purpuratus	GCF_000002235.5	pretrained	0.7670	0.8780	0.8188	0.7650	0.8470	0.8039	0.4310	0.4200	0.4254
+Fungi	fh1kg88z	Aspergillus fumigatus	GCF_000002655.1	finetuned	0.9560	0.9640	0.9600	0.7740	0.8160	0.7944	0.6500	0.6550	0.6525
+Fungi	fh1kg88z	Aspergillus fumigatus	GCF_000002655.1	pretrained	0.9560	0.9650	0.9605	0.7730	0.8130	0.7925	0.6460	0.6500	0.6480
+Fungi	fh1kg88z	Coccidioides immitis	GCF_000149335.2	finetuned	0.9810	0.9080	0.9431	0.9080	0.7410	0.8160	0.8000	0.6340	0.7074
+Fungi	fh1kg88z	Coccidioides immitis	GCF_000149335.2	pretrained	0.9750	0.9100	0.9414	0.8980	0.7380	0.8102	0.7850	0.6270	0.6972
+Fungi	fh1kg88z	Hanseniaspora uvarum	GCA_050947715.1	finetuned	0.9550	0.9950	0.9746	0.7910	0.8150	0.8028	0.8080	0.8640	0.8351
+Fungi	fh1kg88z	Hanseniaspora uvarum	GCA_050947715.1	pretrained	0.9550	0.9960	0.9751	0.7930	0.8120	0.8024	0.8070	0.8620	0.8336
+Fungi	fh1kg88z	Psilocybe cubensis	GCF_017499595.1	finetuned	0.8220	0.9650	0.8878	0.7110	0.8260	0.7642	0.4000	0.4580	0.4270
+Fungi	fh1kg88z	Psilocybe cubensis	GCF_017499595.1	pretrained	0.8250	0.9650	0.8895	0.7120	0.8240	0.7639	0.4000	0.4540	0.4253
+Fungi	fh1kg88z	Rhizophagus irregularis	GCF_026210795.1	finetuned	0.7090	0.8710	0.7817	0.6830	0.6520	0.6671	0.4830	0.4530	0.4675
+Fungi	fh1kg88z	Rhizophagus irregularis	GCF_026210795.1	pretrained	0.6930	0.8900	0.7792	0.6400	0.6490	0.6445	0.4490	0.4310	0.4398
+Fungi	fh1kg88z	Saitoella coloradoensis	GCA_051599425.1	finetuned	0.9480	0.9900	0.9685	0.8120	0.8710	0.8405	0.7480	0.7870	0.7670
+Fungi	fh1kg88z	Saitoella coloradoensis	GCA_051599425.1	pretrained	0.9470	0.9930	0.9695	0.8110	0.8690	0.8390	0.7470	0.7890	0.7674
+Fungi	fh1kg88z	Vairimorpha necatrix	GCF_036630325.1	finetuned	0.7100	0.9340	0.8067	0.6820	0.6760	0.6790	0.7190	0.8110	0.7622
+Fungi	fh1kg88z	Vairimorpha necatrix	GCF_036630325.1	pretrained	0.6660	0.9360	0.7782	0.5930	0.6380	0.6147	0.6490	0.7620	0.7010
+Insecta	58hsuobw	Aphis gossypii	GCF_020184175.1	finetuned	0.9440	0.7720	0.8494	0.9010	0.7700	0.8304	0.5990	0.4550	0.5172
+Insecta	58hsuobw	Aphis gossypii	GCF_020184175.1	pretrained	0.9070	0.7870	0.8427	0.8540	0.7820	0.8164	0.5450	0.4330	0.4826
+Insecta	58hsuobw	Apis mellifera	GCF_003254395.2	finetuned	0.9680	0.9530	0.9604	0.9200	0.8140	0.8638	0.6500	0.6400	0.6450
+Insecta	58hsuobw	Apis mellifera	GCF_003254395.2	pretrained	0.9690	0.9480	0.9584	0.9160	0.8020	0.8552	0.6210	0.5740	0.5966
+Insecta	58hsuobw	Bombyx mori	GCF_030269925.1	finetuned	0.9470	0.8610	0.9020	0.9180	0.8250	0.8690	0.6000	0.5530	0.5755
+Insecta	58hsuobw	Bombyx mori	GCF_030269925.1	pretrained	0.9520	0.8210	0.8817	0.9160	0.7890	0.8478	0.5530	0.4480	0.4950
+Insecta	58hsuobw	Cloeon dipterum	GCF_949628265.1	finetuned	0.7850	0.9580	0.8629	0.7580	0.8650	0.8080	0.4710	0.6070	0.5304
+Insecta	58hsuobw	Cloeon dipterum	GCF_949628265.1	pretrained	0.8020	0.9310	0.8617	0.7750	0.8120	0.7931	0.4380	0.4960	0.4652
+Insecta	58hsuobw	Drosophila melanogaster	GCF_000001215.4	finetuned	0.9910	0.9560	0.9732	0.9380	0.8070	0.8676	0.7930	0.7660	0.7793
+Insecta	58hsuobw	Drosophila melanogaster	GCF_000001215.4	pretrained	0.9920	0.9130	0.9509	0.9260	0.7480	0.8275	0.7390	0.6160	0.6719
+Insecta	58hsuobw	Kerria lacca	GCA_045014175.1	finetuned	0.7740	0.9100	0.8365	0.6950	0.7970	0.7425	0.3490	0.3190	0.3333
+Insecta	58hsuobw	Kerria lacca	GCA_045014175.1	pretrained	0.7810	0.8860	0.8302	0.7000	0.7780	0.7369	0.3330	0.2680	0.2970
+Insecta	58hsuobw	Tenebrio molitor	GCF_963966145.1	finetuned	0.8760	0.9090	0.8922	0.8210	0.7890	0.8047	0.5380	0.5830	0.5596
+Insecta	58hsuobw	Tenebrio molitor	GCF_963966145.1	pretrained	0.8800	0.8950	0.8874	0.8100	0.7530	0.7805	0.4890	0.5020	0.4954
+Insecta	58hsuobw	Thermobia domestica	GCF_964235325.1	finetuned	0.7880	0.5890	0.6741	0.7890	0.6180	0.6931	0.3330	0.2200	0.2650
+Insecta	58hsuobw	Thermobia domestica	GCF_964235325.1	pretrained	0.7940	0.5670	0.6616	0.7760	0.6040	0.6793	0.2840	0.1880	0.2262
+Insecta	58hsuobw	Tribolium castaneum	GCF_031307605.1	finetuned	0.9300	0.9150	0.9224	0.8650	0.7990	0.8307	0.6100	0.6400	0.6246
+Insecta	58hsuobw	Tribolium castaneum	GCF_031307605.1	pretrained	0.9280	0.9110	0.9194	0.8500	0.7540	0.7991	0.5380	0.5350	0.5365
+Nematoda	zspca2rb	Acanthocheilonema viteae	GCA_046563165.1	finetuned	0.9240	0.9670	0.9450	0.9070	0.9060	0.9065	0.6120	0.6030	0.6075
+Nematoda	zspca2rb	Acanthocheilonema viteae	GCA_046563165.1	pretrained	0.9210	0.9620	0.9411	0.9010	0.8970	0.8990	0.5790	0.5600	0.5693
+Nematoda	zspca2rb	Caenorhabditis elegans	GCF_000002985.6	finetuned	0.9650	0.9590	0.9620	0.9260	0.8790	0.9019	0.7560	0.7480	0.7520
+Nematoda	zspca2rb	Caenorhabditis elegans	GCF_000002985.6	pretrained	0.9570	0.9590	0.9580	0.9170	0.8700	0.8929	0.7200	0.7170	0.7185
+Nematoda	zspca2rb	Meloidogyne hapla	GCA_051171035.1	finetuned	0.7370	0.9760	0.8398	0.7290	0.9290	0.8169	0.4760	0.6200	0.5385
+Nematoda	zspca2rb	Meloidogyne hapla	GCA_051171035.1	pretrained	0.7360	0.9760	0.8392	0.7270	0.9270	0.8149	0.4710	0.6130	0.5327
+Nematoda	zspca2rb	Necator americanus	GCF_031761385.1	finetuned	0.9500	0.6810	0.7933	0.9230	0.7010	0.7968	0.5020	0.2900	0.3676
+Nematoda	zspca2rb	Necator americanus	GCF_031761385.1	pretrained	0.9470	0.6780	0.7902	0.9170	0.6880	0.7862	0.4610	0.2620	0.3341
+Nematoda	zspca2rb	Nippostrongylus brasiliensis	GCA_030553155.1	finetuned	0.7760	0.9160	0.8402	0.9100	0.8310	0.8687	0.5230	0.5550	0.5385
+Nematoda	zspca2rb	Nippostrongylus brasiliensis	GCA_030553155.1	pretrained	0.7560	0.9210	0.8304	0.8960	0.8290	0.8612	0.4870	0.5310	0.5080
+Nematoda	zspca2rb	Pristionchus pacificus	GCA_000180635.4	finetuned	0.8220	0.9020	0.8601	0.7650	0.8190	0.7911	0.2110	0.2410	0.2250
+Nematoda	zspca2rb	Pristionchus pacificus	GCA_000180635.4	pretrained	0.8130	0.9060	0.8570	0.7630	0.8170	0.7891	0.2030	0.2360	0.2183
+Nematoda	zspca2rb	Steinernema hermaphroditum	GCA_030435675.2	finetuned	0.9230	0.9400	0.9314	0.9010	0.7320	0.8078	0.5980	0.7140	0.6509
+Nematoda	zspca2rb	Steinernema hermaphroditum	GCA_030435675.2	pretrained	0.9240	0.9410	0.9324	0.8940	0.7300	0.8037	0.5860	0.7000	0.6379
+Nematoda	zspca2rb	Strongyloides ratti	GCF_001040885.1	finetuned	0.9600	0.9800	0.9699	0.8110	0.7430	0.7755	0.6230	0.6410	0.6319
+Nematoda	zspca2rb	Strongyloides ratti	GCF_001040885.1	pretrained	0.9610	0.9780	0.9694	0.8010	0.7340	0.7660	0.6160	0.6190	0.6175
+Porifera	7bjiexcu	Corticium candelabrum	GCF_963422355.1	finetuned	0.8410	0.8490	0.8450	0.8160	0.8430	0.8293	0.5010	0.4480	0.4730
+Porifera	7bjiexcu	Corticium candelabrum	GCF_963422355.1	pretrained	0.8400	0.8070	0.8232	0.7930	0.7440	0.7677	0.3490	0.3010	0.3232
+Porifera	7bjiexcu	Dysidea avara	GCF_963678975.1	finetuned	0.8280	0.8440	0.8359	0.8510	0.8260	0.8383	0.5200	0.4960	0.5077
+Porifera	7bjiexcu	Dysidea avara	GCF_963678975.1	pretrained	0.8190	0.8460	0.8323	0.8280	0.8270	0.8275	0.4750	0.4760	0.4755
+Porifera	7bjiexcu	Ephydatia muelleri	GCA_049114765.1	finetuned	0.8440	0.6040	0.7041	0.7670	0.6010	0.6739	0.2610	0.1600	0.1984
+Porifera	7bjiexcu	Ephydatia muelleri	GCA_049114765.1	pretrained	0.8350	0.6060	0.7023	0.7530	0.5980	0.6666	0.2330	0.1510	0.1832
+Porifera	7bjiexcu	Halichondria panicea	GCF_963675165.1	finetuned	0.8650	0.9370	0.8996	0.8480	0.8830	0.8651	0.5510	0.6160	0.5817
+Porifera	7bjiexcu	Halichondria panicea	GCF_963675165.1	pretrained	0.8520	0.9410	0.8943	0.8190	0.8870	0.8516	0.5040	0.6090	0.5515
+Porifera	7bjiexcu	Oscarella lobularis	GCF_947507565.1	finetuned	0.8700	0.9680	0.9164	0.8600	0.9100	0.8843	0.5490	0.6580	0.5986
+Porifera	7bjiexcu	Oscarella lobularis	GCF_947507565.1	pretrained	0.8710	0.9610	0.9138	0.8500	0.8930	0.8710	0.4930	0.5950	0.5392
+Porifera	7bjiexcu	Sycon ciliatum	GCF_964019385.1	finetuned	0.8180	0.8210	0.8195	0.8750	0.8790	0.8770	0.5200	0.5270	0.5235
+Porifera	7bjiexcu	Sycon ciliatum	GCF_964019385.1	pretrained	0.7900	0.8140	0.8018	0.8370	0.8590	0.8479	0.4040	0.4490	0.4253
+Rhodophyta	6kmw3wme	Chondrus crispus	GCF_000350225.1	finetuned	0.4760	0.7190	0.5728	0.2490	0.2540	0.2515	0.2700	0.2590	0.2644
+Rhodophyta	6kmw3wme	Chondrus crispus	GCF_000350225.1	pretrained	0.2400	0.8190	0.3712	0.1020	0.2800	0.1495	0.1520	0.2860	0.1985
+Rhodophyta	6kmw3wme	Cyanidioschyzon merolae	GCF_000091205.1	finetuned	0.9690	0.9710	0.9700	0.8020	0.8350	0.8182	0.8110	0.8360	0.8233
+Rhodophyta	6kmw3wme	Cyanidioschyzon merolae	GCF_000091205.1	pretrained	0.9670	0.8680	0.9148	0.5760	0.5440	0.5595	0.6430	0.5440	0.5894
+Rhodophyta	6kmw3wme	Galdieria sulphuraria	GCF_000341285.1	finetuned	0.9450	0.9330	0.9390	0.7250	0.6650	0.6937	0.4840	0.4720	0.4779
+Rhodophyta	6kmw3wme	Galdieria sulphuraria	GCF_000341285.1	pretrained	0.9440	0.8240	0.8799	0.5330	0.3570	0.4276	0.3190	0.2280	0.2659
+Rhodophyta	6kmw3wme	Gracilaria domingensis	GCA_022539475.1	finetuned	0.3950	0.8130	0.5317	0.1250	0.2420	0.1649	0.2020	0.3070	0.2437
+Rhodophyta	6kmw3wme	Gracilaria domingensis	GCA_022539475.1	pretrained	0.3860	0.8160	0.5241	0.1220	0.2400	0.1618	0.1970	0.3050	0.2394
+Rhodophyta	6kmw3wme	Porphyra umbilicalis	GCA_002049455.2	finetuned	0.3640	0.6800	0.4742	0.1350	0.2630	0.1784	0.1820	0.2660	0.2161
+Rhodophyta	6kmw3wme	Porphyra umbilicalis	GCA_002049455.2	pretrained	0.3620	0.6460	0.4640	0.1370	0.2540	0.1780	0.1830	0.2560	0.2134
+Spiralia	v5ej8oyt	Adineta vaga	GCA_021613535.1	finetuned	0.8620	0.9430	0.9007	0.8160	0.8330	0.8244	0.5560	0.5780	0.5668
+Spiralia	v5ej8oyt	Adineta vaga	GCA_021613535.1	pretrained	0.8460	0.6180	0.7142	0.6900	0.3440	0.4591	0.2780	0.1360	0.1826
+Spiralia	v5ej8oyt	Neoechinorhynchus agilis	GCA_051530055.1	finetuned	0.9070	0.7000	0.7902	0.6240	0.4340	0.5119	0.3700	0.2290	0.2829
+Spiralia	v5ej8oyt	Neoechinorhynchus agilis	GCA_051530055.1	pretrained	0.9160	0.4210	0.5769	0.5200	0.1750	0.2619	0.2830	0.0830	0.1284
+Spiralia	v5ej8oyt	Octopus bimaculoides	GCF_001194135.2	finetuned	0.9350	0.7070	0.8052	0.8860	0.6500	0.7499	0.3250	0.1980	0.2461
+Spiralia	v5ej8oyt	Octopus bimaculoides	GCF_001194135.2	pretrained	0.9210	0.7950	0.8534	0.8580	0.7330	0.7906	0.3520	0.2630	0.3011
+Spiralia	v5ej8oyt	Patella vulgata	GCF_932274485.2	finetuned	0.7160	0.9240	0.8068	0.7210	0.8540	0.7819	0.3820	0.4900	0.4293
+Spiralia	v5ej8oyt	Patella vulgata	GCF_932274485.2	pretrained	0.7190	0.9160	0.8056	0.7160	0.8430	0.7743	0.3670	0.4430	0.4014
+Spiralia	v5ej8oyt	Tubulanus polymorphus	GCF_964204645.1	finetuned	0.7380	0.9060	0.8134	0.8070	0.8530	0.8294	0.3900	0.4570	0.4209
+Spiralia	v5ej8oyt	Tubulanus polymorphus	GCF_964204645.1	pretrained	0.7190	0.8830	0.7926	0.7960	0.8010	0.7985	0.3240	0.3310	0.3275
+Spiralia	v5ej8oyt	Watersipora subatra	GCF_963576615.1	finetuned	0.6720	0.8230	0.7399	0.6680	0.8120	0.7330	0.2890	0.3120	0.3001
+Spiralia	v5ej8oyt	Watersipora subatra	GCF_963576615.1	pretrained	0.6520	0.7980	0.7176	0.6380	0.7810	0.7023	0.2300	0.2330	0.2315
+Stramenopiles	r6p9z9jw	Bremia lactucae	GCF_004359215.1	finetuned	0.9000	0.9220	0.9109	0.6990	0.6570	0.6773	0.5970	0.5290	0.5609
+Stramenopiles	r6p9z9jw	Bremia lactucae	GCF_004359215.1	pretrained	0.8980	0.9070	0.9025	0.6800	0.6220	0.6497	0.5720	0.4960	0.5313
+Stramenopiles	r6p9z9jw	Ectocarpus siliculosus	GCA_000310025.1	finetuned	0.7750	0.9240	0.8430	0.7410	0.7820	0.7609	0.2620	0.2460	0.2537
+Stramenopiles	r6p9z9jw	Ectocarpus siliculosus	GCA_000310025.1	pretrained	0.7930	0.9000	0.8431	0.7580	0.7580	0.7580	0.2610	0.2180	0.2376
+Stramenopiles	r6p9z9jw	Peronosclerospora sorghi	GCA_026184515.1	finetuned	0.8120	0.5270	0.6392	0.4810	0.2090	0.2914	0.3920	0.1470	0.2138
+Stramenopiles	r6p9z9jw	Peronosclerospora sorghi	GCA_026184515.1	pretrained	0.7670	0.5840	0.6631	0.4130	0.2220	0.2888	0.3330	0.1610	0.2171
+Stramenopiles	r6p9z9jw	Phaeodactylum tricornutum	GCF_000150955.2	finetuned	0.8070	0.9550	0.8748	0.5420	0.5230	0.5323	0.4810	0.5180	0.4988
+Stramenopiles	r6p9z9jw	Phaeodactylum tricornutum	GCF_000150955.2	pretrained	0.8050	0.9600	0.8757	0.5390	0.5220	0.5304	0.4790	0.5160	0.4968
+Stramenopiles	r6p9z9jw	Phytophthora ramorum	GCF_020800215.1	finetuned	0.8020	0.9560	0.8723	0.7630	0.7830	0.7729	0.6370	0.7060	0.6697
+Stramenopiles	r6p9z9jw	Phytophthora ramorum	GCF_020800215.1	pretrained	0.7440	0.9520	0.8352	0.7380	0.7500	0.7440	0.5960	0.6690	0.6304
+Stramenopiles	r6p9z9jw	Thalassiosira pseudonana ccmp1335	GCF_000149405.2	finetuned	0.7390	0.9690	0.8385	0.4610	0.4970	0.4783	0.3370	0.3910	0.3620
+Stramenopiles	r6p9z9jw	Thalassiosira pseudonana ccmp1335	GCF_000149405.2	pretrained	0.7410	0.9650	0.8383	0.4650	0.4960	0.4800	0.3400	0.3920	0.3642
+Streptophyta	j9m0cdmk	Arabidopsis thaliana	GCF_000001735.4	finetuned	0.9840	0.9330	0.9578	0.9580	0.8260	0.8871	0.8390	0.7630	0.7992
+Streptophyta	j9m0cdmk	Arabidopsis thaliana	GCF_000001735.4	pretrained	0.9850	0.9160	0.9492	0.9560	0.8070	0.8752	0.8100	0.7030	0.7527
+Streptophyta	j9m0cdmk	Asparagus officinalis	GCF_001876935.1	finetuned	0.9420	0.6170	0.7456	0.8770	0.6200	0.7264	0.5050	0.2970	0.3740
+Streptophyta	j9m0cdmk	Asparagus officinalis	GCF_001876935.1	pretrained	0.9250	0.6680	0.7758	0.8530	0.6480	0.7365	0.4670	0.3260	0.3840
+Streptophyta	j9m0cdmk	Ceratodon purpureus	GCA_014871385.1	finetuned	0.9160	0.8260	0.8687	0.8700	0.7580	0.8101	0.6460	0.4150	0.5054
+Streptophyta	j9m0cdmk	Ceratodon purpureus	GCA_014871385.1	pretrained	0.8660	0.8120	0.8381	0.8370	0.7470	0.7894	0.5900	0.3930	0.4718
+Streptophyta	j9m0cdmk	Diphasiastrum complanatum	GCA_029204225.1	finetuned	0.9120	0.7750	0.8379	0.8500	0.6310	0.7243	0.5300	0.4020	0.4572
+Streptophyta	j9m0cdmk	Diphasiastrum complanatum	GCA_029204225.1	pretrained	0.9060	0.7540	0.8230	0.8280	0.5560	0.6653	0.4880	0.3720	0.4222
+Streptophyta	j9m0cdmk	Hordeum vulgare	GCF_904849725.1	finetuned	0.9210	0.7580	0.8316	0.8830	0.7630	0.8186	0.6700	0.4960	0.5700
+Streptophyta	j9m0cdmk	Hordeum vulgare	GCF_904849725.1	pretrained	0.8990	0.8310	0.8637	0.8550	0.7820	0.8169	0.6330	0.5830	0.6070
+Streptophyta	j9m0cdmk	Juncus effusus	GCA_027726005.1	finetuned	0.7880	0.9140	0.8463	0.7720	0.8990	0.8307	0.5510	0.6550	0.5985
+Streptophyta	j9m0cdmk	Juncus effusus	GCA_027726005.1	pretrained	0.7980	0.9010	0.8464	0.7770	0.8860	0.8279	0.5450	0.6220	0.5810
+Streptophyta	j9m0cdmk	Marchantia polymorpha subsp. ruderalis	GCA_037833965.1	finetuned	0.9550	0.8890	0.9208	0.9280	0.8350	0.8790	0.7170	0.5370	0.6141
+Streptophyta	j9m0cdmk	Marchantia polymorpha subsp. ruderalis	GCA_037833965.1	pretrained	0.9580	0.8610	0.9069	0.9190	0.8070	0.8594	0.6580	0.4820	0.5564
+Streptophyta	j9m0cdmk	Physcomitrium patens	GCF_000002425.5	finetuned	0.9670	0.9240	0.9450	0.9330	0.8180	0.8717	0.7050	0.6370	0.6693
+Streptophyta	j9m0cdmk	Physcomitrium patens	GCF_000002425.5	pretrained	0.9700	0.8880	0.9272	0.9310	0.7880	0.8536	0.6620	0.5640	0.6091
+Streptophyta	j9m0cdmk	Solanum lycopersicum	GCF_036512215.1	finetuned	0.9390	0.8300	0.8811	0.9070	0.8080	0.8546	0.7110	0.6360	0.6714
+Streptophyta	j9m0cdmk	Solanum lycopersicum	GCF_036512215.1	pretrained	0.9520	0.8090	0.8747	0.9190	0.7880	0.8485	0.7110	0.5900	0.6449
+Streptophyta	j9m0cdmk	Solanum tuberosum	GCF_000226075.1	finetuned	0.8910	0.8860	0.8885	0.8610	0.8360	0.8483	0.6420	0.6420	0.6420
+Streptophyta	j9m0cdmk	Solanum tuberosum	GCF_000226075.1	pretrained	0.9100	0.8570	0.8827	0.8770	0.8140	0.8443	0.6520	0.5960	0.6227
+Streptophyta	j9m0cdmk	Sorghum bicolor	GCF_000003195.3	finetuned	0.9530	0.8220	0.8827	0.9200	0.8060	0.8592	0.7260	0.6010	0.6576
+Streptophyta	j9m0cdmk	Sorghum bicolor	GCF_000003195.3	pretrained	0.9410	0.8510	0.8937	0.9090	0.8050	0.8538	0.6970	0.6170	0.6546
+Streptophyta	j9m0cdmk	Vitis vinifera	GCF_030704535.1	finetuned	0.9510	0.8670	0.9071	0.9050	0.8110	0.8554	0.6750	0.6050	0.6381
+Streptophyta	j9m0cdmk	Vitis vinifera	GCF_030704535.1	pretrained	0.9470	0.8710	0.9074	0.8980	0.8050	0.8490	0.6540	0.5930	0.6220
+Streptophyta	j9m0cdmk	Zea mays	GCF_902167145.1	finetuned	0.9370	0.8030	0.8648	0.9000	0.7530	0.8200	0.7170	0.5710	0.6357
+Streptophyta	j9m0cdmk	Zea mays	GCF_902167145.1	pretrained	0.9220	0.8060	0.8601	0.8720	0.7390	0.8000	0.6610	0.5500	0.6004
+Tunicata	hcehc7ff	Botryllus schlosseri	GCF_051294905.1	finetuned	0.8470	0.8890	0.8675	0.8500	0.8550	0.8525	0.5210	0.5340	0.5274
+Tunicata	hcehc7ff	Botryllus schlosseri	GCF_051294905.1	pretrained	0.8310	0.8880	0.8586	0.8300	0.8350	0.8325	0.4560	0.4910	0.4729
+Tunicata	hcehc7ff	Ciona intestinalis	GCF_018327825.1	finetuned	0.8810	0.9490	0.9137	0.8370	0.8930	0.8641	0.5190	0.5530	0.5355
+Tunicata	hcehc7ff	Ciona intestinalis	GCF_018327825.1	pretrained	0.8780	0.9420	0.9089	0.8390	0.8820	0.8600	0.5030	0.5150	0.5089
+Tunicata	hcehc7ff	Clavelina lepadiformis	GCF_947623445.1	finetuned	0.9060	0.9530	0.9289	0.9010	0.9000	0.9005	0.6090	0.6390	0.6236
+Tunicata	hcehc7ff	Clavelina lepadiformis	GCF_947623445.1	pretrained	0.9120	0.9370	0.9243	0.9070	0.8760	0.8912	0.5710	0.5630	0.5670
+Tunicata	hcehc7ff	Oikopleura dioica	GCA_907165135.1	finetuned	0.8290	0.9270	0.8753	0.6430	0.7020	0.6712	0.2600	0.3310	0.2912
+Tunicata	hcehc7ff	Oikopleura dioica	GCA_907165135.1	pretrained	0.8260	0.9150	0.8682	0.6450	0.6680	0.6563	0.2470	0.3070	0.2738
+Tunicata	hcehc7ff	Phallusia mammillata	GCF_965637545.1	finetuned	0.8030	0.9030	0.8501	0.7870	0.8940	0.8371	0.5010	0.5720	0.5342
+Tunicata	hcehc7ff	Phallusia mammillata	GCF_965637545.1	pretrained	0.8030	0.9030	0.8501	0.7880	0.8920	0.8368	0.4940	0.5680	0.5284
+Tunicata	hcehc7ff	Styela clava	GCF_964204865.1	finetuned	0.8720	0.9310	0.9005	0.8750	0.9120	0.8931	0.5910	0.6660	0.6263
+Tunicata	hcehc7ff	Styela clava	GCF_964204865.1	pretrained	0.8680	0.9290	0.8975	0.8750	0.9070	0.8907	0.5830	0.6510	0.6151
+Vertebrata	etb1go6q	Danio rerio	GCF_049306965.1	finetuned	0.8760	0.8980	0.8869	0.9060	0.8020	0.8508	0.5250	0.5300	0.5275
+Vertebrata	etb1go6q	Danio rerio	GCF_049306965.1	pretrained	0.6680	0.9260	0.7761	0.8400	0.8270	0.8334	0.3830	0.5500	0.4516
+Vertebrata	etb1go6q	Delphinus delphis	GCF_949987515.2	finetuned	0.7290	0.7840	0.7555	0.8930	0.7040	0.7873	0.4670	0.4080	0.4355
+Vertebrata	etb1go6q	Delphinus delphis	GCF_949987515.2	pretrained	0.4700	0.7850	0.5880	0.8270	0.6980	0.7570	0.3860	0.3680	0.3768
+Vertebrata	etb1go6q	Denticeps clupeoides	GCF_900700375.2	finetuned	0.8970	0.9500	0.9227	0.8930	0.8670	0.8798	0.5100	0.5760	0.5410
+Vertebrata	etb1go6q	Denticeps clupeoides	GCF_900700375.2	pretrained	0.8490	0.9490	0.8962	0.8600	0.8540	0.8570	0.4190	0.5280	0.4672
+Vertebrata	etb1go6q	Gallus gallus	GCF_016699485.2	finetuned	0.9040	0.8620	0.8825	0.8810	0.7700	0.8218	0.4840	0.4790	0.4815
+Vertebrata	etb1go6q	Gallus gallus	GCF_016699485.2	pretrained	0.8870	0.8400	0.8629	0.8740	0.7440	0.8038	0.4490	0.4270	0.4377
+Vertebrata	etb1go6q	Heptranchias perlo	GCF_035084215.1	finetuned	0.7660	0.7390	0.7523	0.8270	0.6630	0.7360	0.3360	0.3440	0.3400
+Vertebrata	etb1go6q	Heptranchias perlo	GCF_035084215.1	pretrained	0.6510	0.7560	0.6996	0.7100	0.6800	0.6947	0.2230	0.3060	0.2580
+Vertebrata	etb1go6q	Homo sapiens	GCF_000001405.40	finetuned	0.8890	0.7540	0.8160	0.8780	0.6090	0.7192	0.4920	0.4500	0.4701
+Vertebrata	etb1go6q	Homo sapiens	GCF_000001405.40	pretrained	0.8390	0.7520	0.7931	0.8440	0.6060	0.7055	0.4180	0.4070	0.4124
+Vertebrata	etb1go6q	Kryptolebias marmoratus	GCF_001649575.2	finetuned	0.9280	0.9490	0.9384	0.9210	0.8740	0.8969	0.5510	0.5840	0.5670
+Vertebrata	etb1go6q	Kryptolebias marmoratus	GCF_001649575.2	pretrained	0.8460	0.9540	0.8968	0.8550	0.8720	0.8634	0.3970	0.5420	0.4583
+Vertebrata	etb1go6q	Latimeria chalumnae	GCF_037176945.1	finetuned	0.3310	0.8280	0.4729	0.6730	0.7430	0.7063	0.1370	0.3610	0.1986
+Vertebrata	etb1go6q	Latimeria chalumnae	GCF_037176945.1	pretrained	0.2020	0.8470	0.3262	0.4670	0.7570	0.5776	0.0650	0.3120	0.1076
+Vertebrata	etb1go6q	Mus musculus	GCF_000001635.27	finetuned	0.7950	0.7860	0.7905	0.8850	0.6490	0.7488	0.4490	0.4300	0.4393
+Vertebrata	etb1go6q	Mus musculus	GCF_000001635.27	pretrained	0.6220	0.8020	0.7006	0.8270	0.6580	0.7329	0.3330	0.4070	0.3663
+Vertebrata	etb1go6q	Myxine glutinosa	GCF_964187855.1	finetuned	0.2550	0.7160	0.3761	0.6060	0.6120	0.6090	0.0800	0.2030	0.1148
+Vertebrata	etb1go6q	Myxine glutinosa	GCF_964187855.1	pretrained	0.1730	0.7930	0.2840	0.4650	0.6650	0.5473	0.0400	0.1840	0.0657
+Vertebrata	etb1go6q	Pristiophorus japonicus	GCF_044704955.1	finetuned	0.6630	0.6550	0.6590	0.7740	0.5690	0.6559	0.2670	0.3180	0.2903
+Vertebrata	etb1go6q	Pristiophorus japonicus	GCF_044704955.1	pretrained	0.3910	0.7330	0.5100	0.5590	0.6470	0.5998	0.1090	0.3010	0.1600
+Vertebrata	etb1go6q	Tiliqua scincoides	GCF_035046505.1	finetuned	0.8140	0.9080	0.8584	0.8300	0.8170	0.8234	0.4000	0.4460	0.4217
+Vertebrata	etb1go6q	Tiliqua scincoides	GCF_035046505.1	pretrained	0.7640	0.8280	0.7947	0.7970	0.7340	0.7642	0.3340	0.3440	0.3389
+Vertebrata	etb1go6q	Xenopus tropicalis	GCF_000004195.4	finetuned	0.7600	0.8890	0.8195	0.8270	0.8070	0.8169	0.4230	0.4760	0.4479
+Vertebrata	etb1go6q	Xenopus tropicalis	GCF_000004195.4	pretrained	0.6690	0.8650	0.7545	0.7770	0.7710	0.7740	0.3120	0.3990	0.3502
+Missing eukaryotes	cg6grhms	Branchiostoma lanceolatum	GCF_035083965.1	finetuned	0.8160	0.9560	0.8805	0.8240	0.8740	0.8483	0.4750	0.5270	0.4997
+Missing eukaryotes	cg6grhms	Branchiostoma lanceolatum	GCF_035083965.1	pretrained	0.8200	0.9460	0.8785	0.8240	0.8660	0.8445	0.4710	0.5100	0.4897
+Missing eukaryotes	cg6grhms	Capsaspora owczarzaki	GCF_000151315.2	finetuned	0.9530	0.9710	0.9619	0.8750	0.8910	0.8829	0.7050	0.7050	0.7050
+Missing eukaryotes	cg6grhms	Capsaspora owczarzaki	GCF_000151315.2	pretrained	0.9560	0.9550	0.9555	0.8700	0.8690	0.8695	0.6720	0.6590	0.6654
+Missing eukaryotes	cg6grhms	Convolutriloba macropyga	GCF_964194025.1	finetuned	0.6700	0.8350	0.7435	0.6920	0.7180	0.7048	0.3280	0.4130	0.3656
+Missing eukaryotes	cg6grhms	Convolutriloba macropyga	GCF_964194025.1	pretrained	0.6780	0.8170	0.7410	0.6860	0.7110	0.6983	0.3170	0.3870	0.3485
+Missing eukaryotes	cg6grhms	Gordionus montsenyensis	GCF_954871325.1	finetuned	0.7600	0.8500	0.8025	0.7300	0.7750	0.7518	0.3260	0.3420	0.3338
+Missing eukaryotes	cg6grhms	Gordionus montsenyensis	GCF_954871325.1	pretrained	0.7220	0.8550	0.7829	0.6670	0.7810	0.7195	0.2820	0.3300	0.3041
+Missing eukaryotes	cg6grhms	Mnemiopsis leidyi	GCA_048537945.1	finetuned	0.8680	0.7200	0.7871	0.8540	0.7930	0.8224	0.4420	0.4030	0.4216
+Missing eukaryotes	cg6grhms	Mnemiopsis leidyi	GCA_048537945.1	pretrained	0.8730	0.7130	0.7849	0.8620	0.7840	0.8212	0.4500	0.3860	0.4156
+Missing eukaryotes	cg6grhms	Saccoglossus kowalevskii	GCF_000003605.3	finetuned	0.7910	0.7930	0.7920	0.7520	0.7240	0.7377	0.3550	0.3150	0.3338
+Missing eukaryotes	cg6grhms	Saccoglossus kowalevskii	GCF_000003605.3	pretrained	0.7960	0.7660	0.7807	0.7420	0.7120	0.7267	0.3380	0.2860	0.3098
+Missing eukaryotes	cg6grhms	Trichomonas vaginalis	GCF_026262505.1	finetuned	0.7040	0.8700	0.7782	0.3060	0.4150	0.3523	0.3720	0.4150	0.3923
+Missing eukaryotes	cg6grhms	Trichomonas vaginalis	GCF_026262505.1	pretrained	0.6780	0.8960	0.7719	0.2720	0.4260	0.3320	0.3370	0.4260	0.3763

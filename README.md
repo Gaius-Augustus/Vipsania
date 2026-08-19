@@ -106,8 +106,7 @@ against that model.
 
 The test species behind the two F1 columns are in
 [configs/test_species.tsv](/configs/test_species.tsv), with precision, sensitivity and F1 at base,
-exon and locus level for each of them, once with and once without finetuning. These are the numbers
-reported in the paper.
+exon and locus level for each of them, once with and once without finetuning.
 
 ### Where models are stored
 
@@ -186,5 +185,5 @@ Vipsania is built on two libraries developed in our group:
 - [bricks2marble](https://github.com/gaius-augustus/bricks2marble) — efficient handling of
   nucleotide sequences and genome annotations, plus the pre- and postprocessing around genome
   annotation.
-- [hidten](https://github.com/gaius-augustus/hidten) — hidden Markov models as differentiable,
+- [hidten](https://github.com/gaius-augustus/hidten-docs) — hidden Markov models as differentiable,
   highly parallel layers inside deep learning models.

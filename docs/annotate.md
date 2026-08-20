@@ -1,6 +1,6 @@
 # Annotating a genome
 
-    $ vipsania annotate model_id genome.fa -o annotation.gff3 --finetune
+    $ vipsania annotate <model_id> genome.fa -o annotation.gff3 --finetune
 
 ## Common options
 
@@ -46,7 +46,7 @@ If you are unsure about yours, do not guess: strip the masking and let finetunin
 structure of your genome from the sequence itself.
 
     $ awk '/^>/ {print; next} {print toupper($0)}' genome.fa > genome_unmasked.fa
-    $ vipsania annotate model_id genome_unmasked.fa -o annotation.gff3 --finetune
+    $ vipsania annotate <model_id> genome_unmasked.fa -o annotation.gff3 --finetune
 
 ## Performance
 

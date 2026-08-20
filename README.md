@@ -44,7 +44,7 @@ slow.
 Annotation is done with `vipsania annotate`. It needs a trained model and a FASTA file of the
 genome you want to annotate.
 
-    $ vipsania annotate model_id genome.fa -o annotation.gff3 --finetune
+    $ vipsania annotate <model_id> genome.fa -o annotation.gff3 --finetune
 
 The same command is available as `python -m vipsania annotate ...`, and from a cloned repository as
 `python scripts/annotate.py ...`.
@@ -137,7 +137,7 @@ and `--coding coding.fa`.
 
 ### Finetuning (recommended)
 
-    $ vipsania annotate model_id genome.fa -o annotation.gff3 --finetune
+    $ vipsania annotate <model_id> genome.fa -o annotation.gff3 --finetune
 
 `--finetune` trains the model on the genome you are about to annotate before predicting anything.
 Since Vipsania is unsupervised, this needs nothing except the FASTA file that you already have. The

@@ -12,9 +12,8 @@ A training run is fully described by a single JSON configuration file with three
 | `dataset` | which FASTA files to train on, context length, batch size and masking behaviour |
 | `trainer` | epochs, steps, learning rate schedule and everything else about optimization    |
 
-Every key corresponds to a field of `VipsaniaConfig`, `DatasetConfig` and `TrainerConfig` in the
-Python package, and unknown keys are rejected, so a typo fails immediately instead of being
-silently ignored.
+Unknown keys are rejected, so a typo in a configuration fails immediately instead of being silently
+ignored.
 
 ## Model configurations
 
@@ -61,10 +60,7 @@ dominate the training. Sequences shorter than the context length `dataset.T` are
 
 Two entries control how those windows are read. `dataset.indexed_window_size` is the number of
 nucleotides fetched from a file in one go, and `dataset.indexed_windows_at_once` is how many such
-windows are read in parallel. Every window is cut into `indexed_window_size / T` training
-sequences, and the sequences of all open windows are shuffled together. With the defaults of
-`6_400_000` and `1` and a context length of `20_000`, one window yields 320 training sequences that
-are shuffled among themselves.
+windows are read in parallel.
 
 Since each window is drawn from an independently sampled file, `indexed_windows_at_once` is what
 mixes genomes: at `1`, consecutive batches come from a single species until its window is used up,

@@ -108,14 +108,22 @@ def annotate_model(
     drop_repeats_threshold: float | None = None,
     jit_compile: bool = True,
 ) -> None:
+    os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
+
+    if not model.endswith(".json"):
+        from ..hub import model_id_for, resolve
+        if model_dir is not None:
+            # a clade name still works, as long as the directory carries the
+            # table that came with the models
+            model = model_id_for(model, root=model_dir, download=False)
+        else:
+            model, model_dir = resolve(model)
+
+    # named after the model, not after however it was asked for, so that the
+    # file says which model produced it
     if output is None:
         output = Path(fasta).parent / f"vipsania_{Path(model).stem}.gff"
     output = Path(output).expanduser()
-    os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
-
-    if model_dir is None and not model.endswith(".json"):
-        from ..hub import resolve
-        model_dir = resolve(model)
 
     import vipsania
 

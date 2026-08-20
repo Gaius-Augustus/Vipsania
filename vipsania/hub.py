@@ -6,6 +6,7 @@ locally are downloaded from :data:`BASE_URL` into :func:`cache_dir` the
 first time they are used, and are read from there afterwards.
 """
 
+import json
 import os
 import shutil
 import sys
@@ -24,6 +25,13 @@ WEIGHTS_NAME = "latest_checkpoint.weights.h5"
 MODEL_FILES = (CONFIG_NAME, WEIGHTS_NAME)
 """The files a pretrained model has to contain. A model folder may hold
 more than these, but without them it cannot be used."""
+
+VERSIONS_NAME = "versions.json"
+"""Table of the models published per clade, kept next to the models
+themselves. It maps a clade name to the model IDs trained for it, the
+most recent one last, so that a clade name can be used in place of an
+ID. Entries that are not such a list, the date under ``updated`` in
+particular, are for the reader and are ignored here."""
 
 
 def base_url() -> str:
@@ -58,6 +66,62 @@ def is_available(model_id: str, root: Path | str | None = None) -> bool:
     """Whether all files of `model_id` are already downloaded."""
     path = (cache_dir() if root is None else Path(root)) / model_id
     return all((path / name).is_file() for name in MODEL_FILES)
+
+
+def versions_path(root: Path | str | None = None) -> Path:
+    """Where the clade table is kept locally."""
+    return (cache_dir() if root is None else Path(root).expanduser()) / VERSIONS_NAME
+
+
+def load_versions(
+    root: Path | str | None = None,
+    download: bool = True,
+    refresh: bool = False,
+) -> dict[str, list[str]]:
+    """The clade table, read locally or fetched from the server.
+
+    An empty table is returned when there is none and none can be
+    fetched. A missing table must never stop an annotation, since a
+    model named by its ID does not need one.
+    """
+    path = versions_path(root)
+    if download and (refresh or not path.is_file()):
+        staging = path.with_name(f".{VERSIONS_NAME}.{os.getpid()}")
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            _download_file(f"{base_url()}/{VERSIONS_NAME}", staging, quiet=True)
+            os.replace(staging, path)
+        except OSError:
+            staging.unlink(missing_ok=True)
+    try:
+        table = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return {}
+    return {
+        clade: list(ids) for clade, ids in table.items()
+        if isinstance(ids, list) and ids
+    }
+
+
+def model_id_for(
+    spec: str,
+    root: Path | str | None = None,
+    download: bool = True,
+) -> str:
+    """Translate a clade name into the model ID published for it, taking
+    the most recent one. Anything that is not a clade name, a model ID
+    in particular, is returned unchanged.
+    """
+    def lookup(table: dict[str, list[str]]) -> str | None:
+        for clade, ids in table.items():
+            if clade.strip().lower() == spec.strip().lower():
+                return ids[-1]
+        return None
+
+    found = lookup(load_versions(root, download=False))
+    if found is None and download:
+        found = lookup(load_versions(root, download=True, refresh=True))
+    return found if found is not None else spec
 
 
 def _report_progress(name: str, read: int, total: int) -> None:
@@ -171,9 +235,9 @@ def download_model(
     except urllib.error.HTTPError as e:
         raise FileNotFoundError(
             f"No pretrained model {model_id!r} at {base_url()} "
-            f"(HTTP {e.code}). Check the model ID against the table in the "
-            "Vipsania README. If this is a model you trained yourself, pass "
-            "its location with --model_dir."
+            f"(HTTP {e.code}). Check the name against the table of clades and "
+            "model IDs in the Vipsania README. If this is a model you trained "
+            "yourself, pass its location with --model_dir."
         ) from e
     except urllib.error.URLError as e:
         raise ConnectionError(
@@ -202,22 +266,33 @@ def _find_local(model_id: str) -> Path | None:
     return path if (path / CONFIG_NAME).is_file() else None
 
 
-def resolve(model_id: str, download: bool = True) -> Path | None:
-    """Locate the model `model_id`, downloading it if necessary.
+def resolve(
+    spec: str,
+    root: Path | str | None = None,
+    download: bool = True,
+) -> tuple[str, Path | None]:
+    """Locate the model named by `spec`, a model ID or a clade name.
 
-    Returns the directory that contains the model folder, to be passed
-    to :func:`vipsania.util.create_model` as ``id_parent_folder``, or
-    ``None`` if the model already exists next to the working directory,
-    where it is found without any help.
+    Returns the ID of the model to use together with the directory that
+    contains its folder, to be passed to
+    :func:`vipsania.util.create_model` as ``id_parent_folder``. That
+    directory is ``None`` when the model lies next to the working
+    directory, where it is found without any help.
     """
-    root = cache_dir()
+    root = cache_dir() if root is None else Path(root).expanduser()
+    if is_available(spec, root):
+        return spec, root
+    if _find_local(spec) is not None:
+        return spec, None
+
+    model_id = model_id_for(spec, root=root, download=download)
     if is_available(model_id, root):
-        return root
-    if _find_local(model_id) is not None:
-        return None
+        return model_id, root
+    if model_id != spec and _find_local(model_id) is not None:
+        return model_id, None
     if not download:
         raise FileNotFoundError(
-            f"Model {model_id!r} was not found locally and downloading is "
-            "disabled."
+            f"Neither a model nor a clade named {spec!r} was found in {root}, "
+            "and downloading is disabled."
         )
-    return download_model(model_id, root)
+    return model_id, download_model(model_id, root)

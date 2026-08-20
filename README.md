@@ -12,7 +12,7 @@ point.
 For you, this means:
 
 - **Annotate any eukaryotic genome from a FASTA file alone.** No extrinsic evidence, no reference
-  annotation, no training data of any kind.
+  annotation, no gene-structure training data of any kind.
 - **Adapt the model to your species on the fly.** Because training needs nothing but sequence, the
   genome you want to annotate is itself valid training data. A short finetuning run on your target
   genome directly before annotating gives the best results — see
@@ -49,9 +49,15 @@ genome you want to annotate.
 The same command is available as `python -m vipsania annotate ...`, and from a cloned repository as
 `python scripts/annotate.py ...`.
 
-The first argument is a **model ID**, the name of one of the pretrained models listed below. The
-first time an ID is used, Vipsania downloads that model (about 100 MB) and keeps it, so every later
-annotation with the same ID starts immediately.
+The first argument names the model to use, either by the **clade** it was trained for or by its
+**model ID**, both listed below. The first time a model is used, Vipsania downloads it (about 100
+MB) and keeps it, so every later annotation with it starts immediately.
+
+    $ vipsania annotate Insecta genome.fa -o annotation.gff3 --finetune
+
+A clade name gives you the model we recommend for that clade at the moment. Should a clade get a
+better model later, `vipsania download <clade>` picks it up; annotating on its own keeps using the
+model it already has. A model ID always refers to that one model.
 
 A model you trained yourself is given in the same way: its ID is the name of its run folder, which
 Vipsania looks for in the directories around the working directory. Set `--model_dir` to use a
@@ -88,7 +94,7 @@ most specific one available.
 | *none of the above* | cg6grhms | 33 | 7 | 0.436 | 0.416 |
 
 Use the last entry for eukaryotes that belong to none of the clades above — it was trained on
-exactly such species.
+exactly such species. It has no clade name of its own; pass `Other` or its model ID.
 
 The two F1 columns are the average locus F1 over the test species of that clade, measured against
 their reference annotations: the first with `--finetune`, the second with the pretrained model
@@ -124,9 +130,10 @@ The output format is chosen by the file suffix of `-o/--output`:
 | `.gff3` / `.gff` | GFF3                                        |
 | `.gtf`           | GTF                                         |
 
-If `-o` is omitted, the annotation is written next to the input FASTA as
-`vipsania_[model_id].gff`. The protein and coding sequences of the predicted genes can be written
-out at the same time with `--protein proteins.fa` and `--coding coding.fa`.
+If `-o` is omitted, the annotation is written next to the input FASTA as `vipsania_[model_id].gff`,
+named after the model that produced it even when you asked for it by clade. The protein and coding
+sequences of the predicted genes can be written out at the same time with `--protein proteins.fa`
+and `--coding coding.fa`.
 
 ### Finetuning (recommended)
 

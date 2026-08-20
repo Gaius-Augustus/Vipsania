@@ -31,17 +31,16 @@
 reached through gradient accumulation. If `--drop_repeats` is not given, it is chosen from the size
 of the input genome.
 
-On strongly repetitive genomes, sequences below the allowed repeat content can be so rare that the
-dataloader spends most of its time searching for them, which stretches a finetuning run from hours
-into a day. Vipsania watches how many sequences the filter discards, warns when the search starts
-to dominate, and then raises the allowed repeat content in steps of 10 percentage points until the
-sampling runs freely again. Setting `--drop_repeats 0` switches the filter off entirely.
+On strongly repetitive genomes, sequences below the allowed repeat content can be so rare that
+finding them is what makes a finetuning run slow. Vipsania notices this, says so, and allows more
+repeats until the run proceeds at a normal pace. Setting `--drop_repeats 0` switches the filter off
+entirely.
 
 ## Repeat-masked genomes
 
-Vipsania reads the soft masking of a genome — lowercase nucleotides — as a repeat track and feeds
-it to the model alongside the sequence. Good masking helps, but masking that is too aggressive or
-too sparse misleads the model, and the quality of a repeat annotation is often hard to judge.
+Vipsania reads the soft masking of a genome, its lowercase nucleotides, as repeats. Good masking
+helps, but masking that is too aggressive or too sparse misleads the model, and the quality of a
+repeat annotation is often hard to judge.
 
 If you are unsure about yours, do not guess: strip the masking and let finetuning learn the repeat
 structure of your genome from the sequence itself.

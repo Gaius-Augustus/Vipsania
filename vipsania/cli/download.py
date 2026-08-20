@@ -14,7 +14,8 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "model_id",
         nargs="+",
-        help="one or more model ids; see the table in the Vipsania README",
+        help="one or more model ids or clade names; see the table in the "
+             "Vipsania README",
     )
     parser.add_argument(
         "-d", "--dir",
@@ -31,10 +32,17 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
 
 def run(args: argparse.Namespace) -> None:
     """Execute the download with already parsed arguments."""
-    from ..hub import cache_dir, download_model, is_available
+    from ..hub import (cache_dir, download_model, is_available, load_versions,
+                       model_id_for)
 
     root = cache_dir() if args.dir is None else Path(args.dir).expanduser()
-    for model_id in args.model_id:
+    # asking for a download explicitly is the moment to look for newly
+    # published models, so the clade table is fetched again
+    load_versions(root=root, refresh=True)
+    for spec in args.model_id:
+        model_id = model_id_for(spec, root=root)
+        if model_id != spec:
+            print(f"Clade {spec} is served by model {model_id}")
         if not args.force and is_available(model_id, root):
             print(f"Model {model_id} is already in {root/model_id}")
             continue

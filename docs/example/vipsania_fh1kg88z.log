@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------------------------------
+|                                   Vipsania genome annotation                                    |
+---------------------------------------------------------------------------------------------------
+
+> target genome file: aspergillus_fumigatus_chr7.fa
+> output annotation file: vipsania_fh1kg88z.gff
+> maximal chunk length: 200000
+> forced divisors of the chunk length: [400]
+> minimal sequence size: 1000
+> group size limit: 1000000000
+> reprediction factor: 0.5
+> repredict exons near boundaries: None
+> postprocessing: True
+> Vipsania total parameters: 25047166
+> batch size for maximal chunk length: 2
+
+Split 1 sequence into 1 group.
+
+==============================================Group 1==============================================
+> sequences: 1
+             NC_007200.1
+> chunk length: 200000
+
+[0.0074s] Start initial prediction of 11 chunks.
+[49.8329s] Searching for errors.
+[49.8343s] Mismatches: 4 (+) | 2 (-) | 0 (+/-). Repredicting 6 chunks.
+[55.0807s] Merging repredictions.
+[55.0921s] Forming transcripts.
+[55.1260s] Creating annotation.
+[55.1360s] Calling postprocessing function.
+[55.1983s] Writing annotation to file.
+[55.2058s] Done.
+
+---------------------------------------------------------------------------------------------------
+|                                            Finished                                             |
+---------------------------------------------------------------------------------------------------

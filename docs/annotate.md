@@ -26,15 +26,16 @@
 | `--finetune_lr`     | learning rate used for finetuning, defaults to `1e-4`                     |
 | `--finetune_B`      | batch size on the GPU; inferred from the available GPU memory by default  |
 | `--drop_repeats`    | only finetune on sequences with low repeat content                        |
+| `--relax_repeats`   | allow more repeats when too few sequences pass that filter                 |
 
 `--finetune_B` only affects how much GPU memory is used; the effective batch size is always 64,
 reached through gradient accumulation. If `--drop_repeats` is not given, it is chosen from the size
 of the input genome.
 
 On strongly repetitive genomes, sequences below the allowed repeat content can be so rare that
-finding them is what makes a finetuning run slow. Vipsania notices this, says so, and allows more
-repeats until the run proceeds at a normal pace. Setting `--drop_repeats 0` switches the filter off
-entirely.
+finding them is what makes a finetuning run slow. Adding `--relax_repeats` lets Vipsania notice
+this, say so, and allow more repeats until the run proceeds at a normal pace; without it the limit
+stays where it was set. Setting `--drop_repeats 0` switches the filter off entirely.
 
 ## Repeat-masked genomes
 

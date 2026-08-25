@@ -13,7 +13,7 @@ from .xai.evaluate import predict_sequence
 
 def _fix_intron_state_chain_labels(a: np.ndarray, isc: int) -> np.ndarray:
     mask = np.logical_and(0 < a, a <= 3*isc)
-    a[mask] = ((a[mask] - 1) // isc) + 1
+    a[mask] = ((a[mask] - 1) % 3) + 1
     a[a > 3*isc] = a[a > 3*isc] - 3*(isc-1)
     return a
 

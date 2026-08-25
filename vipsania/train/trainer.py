@@ -71,6 +71,7 @@ class Trainer:
         load_weight_name: str = "latest_checkpoint.weights.h5",
         log_param_hist: int = 0,
         log_hooks: int = 0,
+        relax_repeats: bool = False,
         callbacks: list[tf.keras.callbacks.Callback] | None = None,
         override_config: dict[str, Any] | None = None,
     ) -> None:
@@ -86,6 +87,7 @@ class Trainer:
         self.online = online
         self._log_freq_hist = log_param_hist
         self._log_freq_hook = log_hooks
+        self.relax_repeats = relax_repeats
         self._given_callbacks = callbacks
         self.override_config = override_config
         self.last_epoch = 0
@@ -179,7 +181,9 @@ class Trainer:
     ]:
         """Create training and validation dataset."""
         self.watcher = None
-        if self.config.dataset.drop_repeats_threshold > 0:
+        if (self.relax_repeats
+            and self.config.dataset.drop_repeats_threshold > 0
+        ):
             self.watcher = RepeatSamplingWatcher(
                 self.config.dataset.drop_repeats_threshold,
             )

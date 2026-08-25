@@ -52,10 +52,12 @@ def _estimate_max_batch_size(
         B = 1.125e-5 - 25_047_166 * A
     else:
         # Calibration for 80GB GPU, 25M model, 200k context:
+        #   -> batch size: 4
+        # Calibration for 90GB GPU, 25M model, 200k context:
         #   -> batch size: 8
         # Calibration for 24GB GPU, 10M model, 200k context:
         #   -> batch size: 2
-        B = 4.5e-5 - 25_047_166 * A
+        B = 5.0625e-5 - 25_047_166 * A
 
     if available_memory_gb is None:
         available_memory_gb = _get_available_memory(gpu_index=gpu_index)
@@ -106,6 +108,7 @@ def annotate_model(
     repeats_input: Literal['track', 'expand', 'omit'] = "track",
     N_token: Literal['track', 'uniform'] = "track",
     drop_repeats_threshold: float | None = None,
+    relax_repeats: bool = False,
     jit_compile: bool = True,
 ) -> None:
     os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
@@ -173,6 +176,7 @@ def annotate_model(
             jit_compile=jit_compile,
             finetune=True,
             resume=False,
+            relax_repeats=relax_repeats,
             verbose=True,
             online=None,
             load_weight_name=weight_name,
@@ -363,6 +367,12 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         type=int,
     )
     finetuning.add_argument(
+        "--relax_repeats",
+        help="allow more repeats when too few sequences pass the repeat "
+             "filter, instead of keeping the limit fixed",
+        action="store_true",
+    )
+    finetuning.add_argument(
         "--drop_repeats",
         help="during finetuning, only train on sequences with low repeat "
              "content; if not specified, will be inferred from the input "
@@ -520,6 +530,7 @@ def run(args: argparse.Namespace) -> None:
         repeats_input=args.repeats,
         N_token=args.N_token,
         drop_repeats_threshold=args.drop_repeats,
+        relax_repeats=args.relax_repeats,
         jit_compile=not args.nojit,
     )
 

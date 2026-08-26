@@ -153,21 +153,22 @@ All options of the annotation are listed in [docs/annotate.md](/docs/annotate.md
 
 ## Training
 
-Vipsania models are trained with `vipsania train` on a set of local FASTA files. A training run is
-described by a single JSON file that configures the model, the data and the optimization.
-Ready-to-use configurations for the three model sizes are in [configs](/configs) — the only entry
-you have to fill in is `dataset.train_paths`, the FASTA files you want to train on.
+Vipsania models are trained with `vipsania train` on a set of local FASTA files. Ready-to-use
+configurations for the three model sizes are in [configs](/configs); rather than editing one, you
+list the FASTA files you want to train on in [configs/train.json](/configs/train.json) and pass it
+as an override:
 
-    $ vipsania train configs/base_25M.json
+    $ vipsania train configs/base_10M.json -oc configs/train.json
 
 Training runs can be logged to [Weights & Biases](https://wandb.ai) with `--online entity/project`.
 Everything a run produces — configuration, checkpoints and metrics — is written to a folder below
 `./checkpoints`, named after the run. That name is exactly the model ID that `vipsania annotate`
 expects.
 
-Because training is unsupervised, you only need genome sequences. See
-[docs/training.md](/docs/training.md) for the configuration format, data preparation, resuming
-runs, multi-GPU training and the available options in detail.
+A published model can also be trained further on species of your choice, which extends the
+`--finetune` option of `vipsania annotate` to a set of genomes. See
+[docs/training.md](/docs/training.md) for that, for the configuration format, and for what to
+change when a run does not fit into GPU memory.
 
 ## Built on
 

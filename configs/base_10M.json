@@ -76,9 +76,7 @@
         "drop_N_threshold": 0.001,
         "drop_repeats_threshold": 0,
 
-        "train_paths": [],
-        "train_files_at_once": 25,
-        "indexed_files": true
+        "train_paths": []
     },
 
     "trainer": {

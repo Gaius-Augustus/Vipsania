@@ -1,0 +1,21 @@
+{
+    "dataset": {
+        "train_paths": [
+
+        ],
+        "B": 4,
+        "indexed_files": true,
+        "indexed_window_size": 3200000,
+        "indexed_windows_at_once": 4
+    },
+    "trainer": {
+        "train_steps": 1600,
+        "gradient_accumulation_steps": 16,
+        "epochs": 100,
+        "lr": 1e-4,
+        "warmup_steps": null,
+        "decay_steps": null,
+        "spliced_loss_schedule": null,
+        "hyperparameter_schedule": []
+    }
+}

@@ -7,8 +7,59 @@ from pathlib import Path
 DEFAULT_CHECKPOINTS_DIR = "checkpoints"
 
 
+def fork_model(source: str, folder: Path | str) -> Path:
+    """Copy the model `source` into `folder`, so that a resumed run
+    continues there and leaves the model it started from untouched.
+
+    Returns the new folder, which the training then treats as the run it
+    resumes.
+    """
+    import shutil
+
+    from ..hub import CONFIG_NAME, WEIGHTS_NAME, resolve
+    from ..util import search_folder
+
+    fork = Path(folder).expanduser()
+    if fork.exists():
+        raise FileExistsError(
+            f"The folder {fork} already exists. Give a name that is still "
+            "free, so that nothing of an earlier run can be overwritten."
+        )
+
+    # a run lying next to the working directory wins, so that --fork starts
+    # from the same model that --resume alone would have continued
+    try:
+        origin = search_folder(Path.cwd(), source)
+    except NotADirectoryError:
+        model_id, root = resolve(source)
+        origin = (
+            Path(root)/model_id if root is not None
+            else search_folder(Path.cwd(), model_id)
+        )
+    missing = [
+        name for name in (CONFIG_NAME, WEIGHTS_NAME)
+        if not (origin/name).is_file()
+    ]
+    if missing:
+        raise FileNotFoundError(
+            f"{origin} is not a model that can be continued from: "
+            f"{', '.join(missing)} missing."
+        )
+
+    fork.mkdir(parents=True)
+    for name in (CONFIG_NAME, WEIGHTS_NAME):
+        shutil.copy(origin/name, fork/name)
+    print(f"Copied {origin} to {fork}, which the training writes to.")
+    return fork
+
+
 def run(args: argparse.Namespace) -> None:
     """Execute the training with already parsed arguments."""
+    if args.fork is not None and not args.resume:
+        raise ValueError(
+            "--fork continues an existing run in a new folder and only works "
+            "together with --resume."
+        )
     os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = 'true'
     import vipsania
 
@@ -16,7 +67,9 @@ def run(args: argparse.Namespace) -> None:
     report_devices()
 
     checkpoints_dir = Path(args.checkpoints).expanduser()
-    checkpoints_dir.mkdir(parents=True, exist_ok=True)
+    if args.fork is None:
+        # a fork brings its own folder and needs no run directory
+        checkpoints_dir.mkdir(parents=True, exist_ok=True)
 
     override_config = {}
     if args.override or args.overrideconfig:
@@ -32,9 +85,15 @@ def run(args: argparse.Namespace) -> None:
             )
         print(f"Applied overrides to model: {override_config}")
 
+    model, model_dir = args.config, None
+    if args.fork is not None:
+        fork = fork_model(args.config, args.fork)
+        model, model_dir = fork.name, fork.parent
+
     trainer = vipsania.Trainer(
-        args.config,
+        model,
         checkpoints_dir=checkpoints_dir,
+        model_dir=model_dir,
         jit_compile=not args.nojit,
         resume=args.resume,
         verbose=int(args.online is None),
@@ -107,7 +166,14 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--resume",
         action="store_true",
-        help="resume a run from its latest checkpoint",
+        help="resume a run from its latest checkpoint, writing into its folder",
+    )
+    parser.add_argument(
+        "--fork",
+        default=None,
+        help="with --resume: continue the run in this new folder instead of "
+             "in the folder of the model itself, which is then left "
+             "untouched; the folder must not exist yet",
     )
     parser.add_argument(
         "--summary",

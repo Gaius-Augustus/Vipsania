@@ -6,7 +6,7 @@ These pages go into detail.
 | page | contents |
 | ---- | -------- |
 | [annotate.md](/docs/annotate.md) | options of `vipsania annotate`, notes on repeat masking |
-| [training.md](/docs/training.md) | the configuration format, preparing data, running and resuming a training, non-standard genetic codes |
+| [training.md](/docs/training.md) | training on your own genomes, continuing from a published model, GPU memory, non-standard genetic codes |
 | [download.md](/docs/download.md) | where models are stored, fetching them in advance |
 | [troubleshooting.md](/docs/troubleshooting.md) | what to check when no GPU is found |
 | [example](/docs/example) | a chromosome and the annotation Vipsania produced for it, to test an installation |

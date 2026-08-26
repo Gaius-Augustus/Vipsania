@@ -21,7 +21,8 @@ For you, this means:
 
 ## Installation
 
-Vipsania requires `python>=3.12`. It is recommended to install into a clean virtual environment.
+Vipsania requires `python>=3.12`. It is recommended to install into a clean virtual environment
+(e.g. using `conda`, `pyenv` or `uv`).
 
     $ python -m pip install vipsania
 

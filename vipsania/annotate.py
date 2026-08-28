@@ -75,6 +75,7 @@ def annotate_genome(
     coding_sequence: str | None = None,
     jit_compile: bool = False,
     logs: list[str] | None = None,
+    translation_table: int | None = None,
 ) -> None:
 
     def post(
@@ -90,6 +91,7 @@ def annotate_genome(
                 protein_sequence,
                 line_width=80,
                 mode="a",
+                translation_table=translation_table,
             )
         if coding_sequence is not None:
             annotation.sequence_to_file(

@@ -2,6 +2,8 @@
 
 **Vipsania is an unsupervised deep learning *ab-initio* gene finder.**
 
+[Preprint at bioRxiv](https://www.biorxiv.org/content/10.64898/2026.08.26.747235v1)
+
 Unlike other deep learning gene finders, Vipsania is never shown a reference annotation. It is
 trained purely on raw genomic sequences with a masked language modelling objective: nucleotides are
 hidden and the model learns to predict them from their context. Gene structure emerges as the

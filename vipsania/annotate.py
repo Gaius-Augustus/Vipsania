@@ -83,7 +83,7 @@ def annotate_genome(
         annotation: b2m.struct.Annotation,
     ) -> b2m.struct.Annotation:
         b2m.tools.check_min_coding_length(annotation, length=9, remove=True)
-        b2m.tools.check_inframe_stop_codons(annotation, fasta, remove=True)
+        b2m.tools.check_inframe_stop_codons(annotation, fasta, remove=True, translation_table=translation_table)
         if protein_sequence is not None:
             annotation.sequence_to_file(
                 "protein",

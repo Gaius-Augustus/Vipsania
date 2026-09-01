@@ -42,6 +42,33 @@ Installing Vipsania pulls in [bricks2marble](https://github.com/gaius-augustus/b
 support. A GPU is strongly recommended; annotating a large genome on CPU only is possible, but
 slow.
 
+### Container images (Docker / Singularity)
+
+If you prefer not to install Python dependencies locally — or if you are
+working on an HPC cluster — use the pre-built image from Docker Hub:
+
+**Docker** (requires `sudo` unless your user is in the `docker` group):
+
+    $ sudo docker pull katharinahoff/vipsania:latest
+    $ sudo docker run --rm --gpus all \
+          -v /path/to/data:/data \
+          katharinahoff/vipsania \
+          vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
+
+**Singularity / Apptainer** (no root needed, suited for HPC):
+
+    $ singularity pull vipsania.sif docker://katharinahoff/vipsania:latest
+    $ singularity exec --nv \
+          -B /path/to/data:/data \
+          vipsania.sif \
+          vipsania annotate Fungi /data/genome.fa -o /data/annotation.gff3 --finetune
+
+Drop `--gpus all` (Docker) or `--nv` (Singularity) for CPU-only runs. The
+image bundles TensorFlow's own CUDA libraries, so **no CUDA installation on
+the host is required** — only the NVIDIA driver for GPU runs. Full details,
+including model-cache persistence and training, are in
+[docs/container.md](/docs/container.md).
+
 ## Annotating a genome
 
 Annotation is done with `vipsania annotate`. It needs a trained model and a FASTA file of the

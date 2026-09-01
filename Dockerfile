@@ -60,8 +60,29 @@ VOLUME ["/cache/vipsania/models"]
 # ── Entrypoint ─────────────────────────────────────────────────────────────
 # Sets LD_LIBRARY_PATH to TF's bundled CUDA libs before exec-ing the
 # requested command (see docs/troubleshooting.md for the rationale).
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Inlined as base64 so the Dockerfile is self-contained and does not require
+# docker/entrypoint.sh to be present in the build context.
+RUN echo \
+    'IyEvdXNyL2Jpbi9lbnYgYmFzaAojIFZpcHNhbmlhIERvY2tlciBlbnRyeXBvaW50CiMKIyBTZXRz' \
+    'IExEX0xJQlJBUllfUEFUSCB0byBUZW5zb3JGbG93J3MgYnVuZGxlZCBDVURBIGxpYnJhcmllcyBz' \
+    'byB0aGUgR1BVCiMgaXMgZGlzY292ZXJlZCBjb3JyZWN0bHkgZXZlbiB3aGVuIGEgc3lzdGVtLXdp' \
+    'ZGUgQ1VEQSBpbnN0YWxsYXRpb24gaXMKIyBwcmVzZW50IG9uIHRoZSBob3N0LiAgVGhpcyBtaXJy' \
+    'b3JzIHRoZSBmaXggaW4gZG9jcy90cm91Ymxlc2hvb3RpbmcubWQ6CiMKIyAgIGV4cG9ydCBMRF9M' \
+    'SUJSQVJZX1BBVEg9JChweXRob24gLWMgImltcG9ydCBzaXRlLCBnbG9iLCBvczsgXAojICAgICBw' \
+    'cmludCgnOicuam9pbihzb3J0ZWQoZ2xvYi5nbG9iKG9zLnBhdGguam9pbiggXAojICAgICAgIHNp' \
+    'dGUuZ2V0c2l0ZXBhY2thZ2VzKClbMF0sICdudmlkaWEnLCAnKicsICdsaWInKSkpKSkiKSR7TERf' \
+    'TElCUkFSWV9QQVRIOis6JExEX0xJQlJBUllfUEFUSH0KIwojIEFmdGVyIHBhdGNoaW5nIHRoZSBw' \
+    'YXRoLCB0aGUgZW50cnlwb2ludCBleGVjLXJlcGxhY2VzIGl0c2VsZiB3aXRoIHRoZQojIGNvbW1h' \
+    'bmQgcGFzc2VkIGJ5IHRoZSBjYWxsZXIgKGUuZy4gdmlwc2FuaWEgYW5ub3RhdGUgLi4uKS4KCnNl' \
+    'dCAtZXVvIHBpcGVmYWlsCgojIENvbGxlY3QgYWxsIG52aWRpYS8qL2xpYiBwYXRocyBpbnN0YWxs' \
+    'ZWQgYnkgdGhlIFRGIHBpcCBwYWNrYWdlcy4KVEZfQ1VEQT0kKHB5dGhvbiAtIDI+L2Rldi9udWxs' \
+    'IDw8J1BZRU9GJyB8fCBlY2hvICIiKQppbXBvcnQgc2l0ZSwgZ2xvYiwgb3MKbGlicyA9IHNvcnRl' \
+    'ZChnbG9iLmdsb2Iob3MucGF0aC5qb2luKHNpdGUuZ2V0c2l0ZXBhY2thZ2VzKClbMF0sICdudmlk' \
+    'aWEnLCAnKicsICdsaWInKSkpCnByaW50KCc6Jy5qb2luKGxpYnMpKQpQWUVPRgoKaWYgWyAtbiAi' \
+    'JFRGX0NVREEiIF07IHRoZW4KICAgIGV4cG9ydCBMRF9MSUJSQVJZX1BBVEg9IiR7VEZfQ1VEQX0k' \
+    'e0xEX0xJQlJBUllfUEFUSDorOiR7TERfTElCUkFSWV9QQVRIfX0iCmZpCgpleGVjICIkQCIK' \
+    | tr -d ' \n' | base64 -d > /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh
 
 # ── Working directory for user data ───────────────────────────────────────
 WORKDIR /data

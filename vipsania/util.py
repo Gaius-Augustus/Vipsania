@@ -113,7 +113,7 @@ def load_runconfig(
     if resume is not None:
         total_dict["trainer"]["resume"] = resume
 
-    if total_dict["model"].get("hmm") is not None:
+    if total_dict["model"].get("hmm") is not None and translation_table is not None:
         total_dict["model"]["hmm"]["translation_table"] = translation_table
 
     return RunConfig(**total_dict)

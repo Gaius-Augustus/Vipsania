@@ -202,6 +202,7 @@ def annotate_model(
                     "hyperparameter_schedule": [],
                 },
             },
+            translation_table=translation_table,
         )
         trainer.create_model()
         finetune_time = clock()

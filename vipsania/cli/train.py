@@ -99,6 +99,7 @@ def run(args: argparse.Namespace) -> None:
         verbose=int(args.online is None),
         online=args.online,
         override_config=override_config,
+        translation_table=args.translation_table,
     )
 
     if args.mirrored:
@@ -179,6 +180,12 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         "--summary",
         action="store_true",
         help="only build the model and print its summary, do not train",
+    )
+    parser.add_argument(
+        "--translation_table",
+        help="Select one of the NCBI translation tables.",
+        default=None,
+        type=int,
     )
 
 

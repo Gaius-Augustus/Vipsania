@@ -50,10 +50,10 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir .
 
 # ── Model cache ────────────────────────────────────────────────────────────
-# Models are downloaded on first use to /cache/vipsania/models.
+# Models are downloaded on first use to $VIPSANIA_CACHE/models = /cache/vipsania/models.
 # Mount a host directory there to persist downloads across container runs:
 #   -v /host/model_cache:/cache/vipsania/models
-ENV VIPSANIA_CACHE=/cache/vipsania/models
+ENV VIPSANIA_CACHE=/cache/vipsania
 RUN mkdir -p /cache/vipsania/models
 VOLUME ["/cache/vipsania/models"]
 

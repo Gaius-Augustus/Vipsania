@@ -84,12 +84,13 @@ sudo docker run --rm --gpus all \
 ```
 
 You can also change the cache path with the environment variable
-`VIPSANIA_CACHE`:
+`VIPSANIA_CACHE`. Vipsania appends `/models` to it, so the setting below stores
+the models in `/data/models` on the mounted volume:
 
 ```bash
 sudo docker run --rm --gpus all \
     -v /path/to/your/data:/data \
-    -e VIPSANIA_CACHE=/data/models \
+    -e VIPSANIA_CACHE=/data \
     katharinahoff/vipsania \
     vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
 ```
@@ -191,9 +192,10 @@ singularity exec \
 Singularity containers are read-only, so Vipsania cannot write to the default
 cache path (`/cache/vipsania/models`) inside the image.  Choose a writable
 location with `SINGULARITYENV_VIPSANIA_CACHE` (or `APPTAINERENV_VIPSANIA_CACHE`
-on Apptainer):
+on Apptainer). Models are stored in `$VIPSANIA_CACHE/models`:
 
 ```bash
+# models end up in /path/to/model_cache/models
 export SINGULARITYENV_VIPSANIA_CACHE=/path/to/model_cache
 # or for Apptainer:
 export APPTAINERENV_VIPSANIA_CACHE=/path/to/model_cache

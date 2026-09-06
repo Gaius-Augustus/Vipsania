@@ -100,8 +100,26 @@ shipped configurations follow the same rule with `B = 8` and 8 accumulation step
 
 ## Species with a non-standard genetic code
 
-The HMM does not assume a genetic code, it is told one. Four entries of the `hmm` section spell out
-which codons start and end a gene and which patterns flank an intron. They are not written in the
+The HMM does not assume a genetic code, it is told one. It is possible to simply use one of the
+pre-defined NCBI translation tables by adding the command line flag `--translation_table [int]`, where
+`[int]` is the number of the desired translation table. If used, this flag will override any specifications
+in the `hmm` section of the JSON configuration.
+
+The translation table can alternatively be specified in the `hmm` section like this:
+
+```json
+"hmm": {
+    "translation_table": 1,
+    "intron_begin_pattern": [["NGT", 0.99], ["NGC", 0.01]],
+    "intron_end_pattern": [["AGN", 1.0]]
+}
+```
+
+When a translation table is specified, the corresponding start and stop codons are determined
+automatically from that table.
+
+The HMM can also be configured manually. In this case, four entries in the `hmm` section spell
+out which codons start and end a gene and which patterns flank an intron. They are not written in the
 shipped configurations because every model so far uses the standard code, which is what these
 fields default to:
 
@@ -114,20 +132,11 @@ fields default to:
 }
 ```
 
-To train on species that deviate, copy these four lines into the `hmm` section of your
+To train on species that deviate, you can copy these four lines into the `hmm` section of your
 [configs/train.json](/configs/train.json) configuration and edit them. Each entry is a list of
 `[pattern, probability]` pairs whose probabilities should sum to one, and `N` stands for any
 nucleotide, so `NGT` is the usual GT donor together with the preceding base and `AGN` the AG
 acceptor.
-
-Ciliates, for instance, read `TAA` and `TAG` as glutamine and stop only at `TGA`:
-
-```json
-"stop_codons": [["TGA", 1.0]]
-```
-
-The same mechanism covers non-canonical splice sites: extend `intron_begin_pattern` or
-`intron_end_pattern` with the additional motifs and give each a share of the probability.
 
 ## Running a training
 

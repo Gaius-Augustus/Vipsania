@@ -1,5 +1,6 @@
 import ast
 import json
+import sys
 import warnings
 from pathlib import Path
 from typing import Any, Literal, overload
@@ -113,8 +114,40 @@ def load_runconfig(
     if resume is not None:
         total_dict["trainer"]["resume"] = resume
 
-    if total_dict["model"].get("hmm") is not None and translation_table is not None:
-        total_dict["model"]["hmm"]["translation_table"] = translation_table
+    hmm_config = total_dict["model"].get("hmm")
+
+    if hmm_config is not None:
+        if translation_table is None:
+            translation_table = hmm_config.get("translation_table")
+        if translation_table is not None:
+            hmm_config["translation_table"] = translation_table
+
+            from bricks2marble.struct.start_stop_codons import (get_start_codons, get_stop_codons)
+
+            new_start_codons = get_start_codons(translation_table)
+            new_stop_codons = get_stop_codons(translation_table)
+
+            warning_start = (
+                "start_codons" in hmm_config
+                and dict(hmm_config["start_codons"])
+                != dict(new_start_codons)
+            )
+            warning_stop = (
+                "stop_codons" in hmm_config
+                and dict(hmm_config["stop_codons"])
+                != dict(new_stop_codons)
+            )
+
+            if warning_start or warning_stop:
+                print(
+                    "Warning: start_codons and stop_codons will be "
+                    "overwritten by translation_table.",
+                    file=sys.stderr,
+                    flush=True,
+                )
+
+            hmm_config["start_codons"] = new_start_codons
+            hmm_config["stop_codons"] = new_stop_codons
 
     return RunConfig(**total_dict)
 

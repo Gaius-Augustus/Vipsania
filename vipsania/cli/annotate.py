@@ -236,7 +236,8 @@ def annotate_model(
     V.set_options(parallel=parallel, tree_depth=lru_tree_depth)
 
     if B == -1: B = _estimate_max_batch_size(T, V.count_params())
-
+    if translation_table is None:
+        translation_table = V.config.hmm.translation_table
     vipsania.annotate_genome(
         V,
         fasta,

@@ -110,6 +110,7 @@ def annotate_model(
     drop_repeats_threshold: float | None = None,
     relax_repeats: bool = False,
     jit_compile: bool = True,
+    translation_table: int | None = None,
 ) -> None:
     os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
 
@@ -147,6 +148,7 @@ def annotate_model(
                     "repeats_emitter": penalize_coding_repeats,
                     "repeats_at_borders": penalize_coding_border_repeats,
                 }}},
+                translation_table=translation_table,
             )
             finetune_B = _estimate_max_batch_size(
                 T, V.count_params(), finetune=True,
@@ -200,6 +202,7 @@ def annotate_model(
                     "hyperparameter_schedule": [],
                 },
             },
+            translation_table=translation_table,
         )
         trainer.create_model()
         finetune_time = clock()
@@ -219,6 +222,7 @@ def annotate_model(
                 "repeats_emitter": penalize_coding_repeats,
                 "repeats_at_borders": penalize_coding_border_repeats,
             }}},
+            translation_table=translation_table,
         )
 
     T_re = int(2*T*reprediction_factor)
@@ -232,7 +236,8 @@ def annotate_model(
     V.set_options(parallel=parallel, tree_depth=lru_tree_depth)
 
     if B == -1: B = _estimate_max_batch_size(T, V.count_params())
-
+    if translation_table is None:
+        translation_table = V.config.hmm.translation_table
     vipsania.annotate_genome(
         V,
         fasta,
@@ -267,6 +272,7 @@ def annotate_model(
         ) + [
             f"| time: {finetune_time/60:.2f} minutes"
         ],
+        translation_table=translation_table,
     )
 
 
@@ -337,6 +343,12 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         "--weights",
         default="latest_checkpoint.weights.h5",
         type=str,
+    )
+    common.add_argument(
+        "--translation_table",
+        help="Select one of the NCBI translation tables.",
+        default=None,
+        type=int,
     )
 
     finetuning = parser.add_argument_group("finetuning")
@@ -532,6 +544,7 @@ def run(args: argparse.Namespace) -> None:
         drop_repeats_threshold=args.drop_repeats,
         relax_repeats=args.relax_repeats,
         jit_compile=not args.nojit,
+        translation_table=args.translation_table,
     )
 
 

@@ -1,5 +1,6 @@
 import ast
 import json
+import sys
 import warnings
 from pathlib import Path
 from typing import Any, Literal, overload
@@ -84,6 +85,7 @@ def load_runconfig(
     override_dataset: dict[str, Any] | None = None,
     override_trainer: dict[str, Any] | None = None,
     resume: str | None = None,
+    translation_table: int | None = None,
 ) -> RunConfig:
     with open(file, "r") as f:
         total_dict = json.load(f)
@@ -112,6 +114,41 @@ def load_runconfig(
     if resume is not None:
         total_dict["trainer"]["resume"] = resume
 
+    hmm_config = total_dict["model"].get("hmm")
+
+    if hmm_config is not None:
+        if translation_table is None:
+            translation_table = hmm_config.get("translation_table")
+        if translation_table is not None:
+            hmm_config["translation_table"] = translation_table
+
+            from bricks2marble.struct.start_stop_codons import (get_start_codons, get_stop_codons)
+
+            new_start_codons = get_start_codons(translation_table)
+            new_stop_codons = get_stop_codons(translation_table)
+
+            warning_start = (
+                "start_codons" in hmm_config
+                and dict(hmm_config["start_codons"])
+                != dict(new_start_codons)
+            )
+            warning_stop = (
+                "stop_codons" in hmm_config
+                and dict(hmm_config["stop_codons"])
+                != dict(new_stop_codons)
+            )
+
+            if warning_start or warning_stop:
+                print(
+                    "Warning: start_codons and stop_codons will be "
+                    "overwritten by translation_table.",
+                    file=sys.stderr,
+                    flush=True,
+                )
+
+            hmm_config["start_codons"] = new_start_codons
+            hmm_config["stop_codons"] = new_stop_codons
+
     return RunConfig(**total_dict)
 
 
@@ -133,6 +170,7 @@ def create_model(
     id_parent_folder: Path | str | None = ...,
     verbose: bool = ...,
     return_config_and_path: Literal[False] = ...,
+    translation_table: int | None = None,
 ) -> Vipsania:
     ...
 @overload
@@ -153,6 +191,7 @@ def create_model(
     id_parent_folder: Path | str | None = ...,
     verbose: bool = ...,
     return_config_and_path: Literal[True] = ...,
+    translation_table: int | None = None,
 ) -> tuple[Vipsania, RunConfig, Path | None]:
     ...
 def create_model(
@@ -172,6 +211,7 @@ def create_model(
     id_parent_folder: Path | str | None = None,
     verbose: bool = True,
     return_config_and_path: bool = False,
+    translation_table: int | None = None,
 ) -> Vipsania | tuple[Vipsania, RunConfig, Path | None]:
     """Creates a `Vipsania` model with a given configuration file or
     model ID.
@@ -225,6 +265,7 @@ def create_model(
         override_dataset=override_dataset,
         override_trainer=override_trainer,
         resume=config_or_id if load else None,
+        translation_table=translation_table,
     )
 
     model = Vipsania(**config.model.model_dump())

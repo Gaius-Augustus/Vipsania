@@ -225,6 +225,7 @@ class AnnotationMetricsConfig(ModelConfig):
     exclude_first_epoch: bool = True
     save_best_key: str | None = None
     jit_compile: bool = True
+    translation_table: int | None = None
     log: list[str] | None = [
         "locus/precision", "locus/sensitivity", "locus/F1",
         "intron/precision", "intron/sensitivity", "intron/F1",
@@ -309,6 +310,7 @@ class AnnotationMetrics(tf.keras.callbacks.Callback):
                     repeats_input=self.config.repeats_input,
                     clean=False,
                     jit_compile=self.config.jit_compile,
+                    translation_table=self.config.translation_table
                 )
                 comparison = b2m.tools.compare(
                     temp_gp,

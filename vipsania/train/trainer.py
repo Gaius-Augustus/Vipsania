@@ -74,6 +74,7 @@ class Trainer:
         relax_repeats: bool = False,
         callbacks: list[tf.keras.callbacks.Callback] | None = None,
         override_config: dict[str, Any] | None = None,
+        translation_table: int | None = None,
     ) -> None:
         self.model_id = model_id
         self.jit_compile = jit_compile
@@ -92,6 +93,7 @@ class Trainer:
         self.override_config = override_config
         self.last_epoch = 0
         self.watcher: RepeatSamplingWatcher | None = None
+        self.translation_table = translation_table
 
     @property
     def path(self) -> Path:
@@ -146,6 +148,7 @@ class Trainer:
             verbose=True,
             return_config_and_path=True,
             override_config=self.override_config,
+            translation_table=self.translation_table,
         )
 
         if self.online is not None:

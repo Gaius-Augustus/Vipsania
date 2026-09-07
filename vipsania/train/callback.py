@@ -1,5 +1,6 @@
 import csv
 import json
+import sys
 import tempfile
 import threading
 from collections.abc import Sequence
@@ -495,19 +496,20 @@ class TerminateOnNaNWithCheckpoint(tf.keras.callbacks.TerminateOnNaN):
 
 
 class SamplingMonitor(tf.keras.callbacks.Callback):
-    """Watches how many sequences the dataloader has to discard to fill
-    a batch and relaxes the repeat filter when the search for usable
-    sequences starts to dominate the runtime.
+    """Refines the repeat content the dataloader samples by, while the
+    training runs.
 
-    The check runs on a timer rather than per batch: when the filter is
-    far too strict, the first batch of an epoch can take minutes to
-    arrive, and that is exactly the situation that has to be noticed.
+    The refinement happens after a fixed number of sampled sequences,
+    but it is triggered from a timer rather than from the end of a
+    batch: when the sampling is slow, batches are rare exactly when the
+    estimate is needed most, and the first batch of an epoch can take
+    minutes to arrive.
     """
 
     def __init__(
         self,
         watcher: RepeatSamplingWatcher,
-        interval: float = 30.0,
+        interval: float = 5.0,
     ) -> None:
         super().__init__()
         self.watcher = watcher
@@ -521,6 +523,17 @@ class SamplingMonitor(tf.keras.callbacks.Callback):
 
     def on_train_begin(self, logs=None) -> None:
         self.watcher.reset()
+        config = self.watcher.config
+        if config.verbose:
+            print(
+                f"\n[repeat sampling] sequences are kept at a rate that "
+                f"falls with their repeat and N content, around "
+                f"{config.floor:.0%} to start with\n[repeat sampling] sigma "
+                f"{config.sigma}, refined every {config.refine_every:,} "
+                f"sequences, and given up only where fewer than "
+                f"{config.quantile:.0%} would pass\n",
+                file=sys.stderr, flush=True,
+            )
         if self.interval <= 0:
             return
         self._stop.clear()

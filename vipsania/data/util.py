@@ -80,30 +80,53 @@ def drop_N_sequences(
     return dataset.filter(_drop_N)
 
 
+def repeat_fraction(x: tf.Tensor) -> tf.Tensor:
+    """The fraction of repeat-masked positions in a sequence. Repeats
+    are assumed to be an extra track in the sixth component of the
+    input.
+    """
+    with tf.device("CPU:0"):
+        return tf.reduce_sum(
+            tf.cast(x[..., 5] == 1, tf.float32)
+        ) / tf.cast(tf.shape(x)[0], tf.float32)
+
+
 def drop_repeats_sequences(
     dataset: tf.data.Dataset,
     threshold: float,
-    watcher: "RepeatSamplingWatcher | None" = None,
 ) -> tf.data.Dataset:
     """Drop sequences that have more than `T * threshold` repeats from
-    the dataset, where `T` is the chunk length. Repeats are assumed to
-    be an extra track in the sixth component of the input.
-
-    With a `watcher`, the threshold is taken from it instead, which
-    allows raising it while the dataset is read on genomes where too few
-    sequences pass the filter.
+    the dataset, where `T` is the chunk length.
     """
-    limit = threshold if watcher is None else watcher.threshold
-
     def _drop_repeats(x, y):
-        with tf.device("CPU:0"):
-            flag = tf.reduce_sum(
-                tf.cast(x[..., 5] == 1, tf.float32)
-            ) <= limit * tf.cast(tf.shape(x)[0], tf.float32)
-        if watcher is not None:
-            return watcher.observe(flag)
-        return flag
+        return repeat_fraction(x) <= threshold
     return dataset.filter(_drop_repeats)
+
+
+def n_fraction(x: tf.Tensor) -> tf.Tensor:
+    """The fraction of unassembled positions in a sequence, the ``N``
+    track in the fifth component of the input.
+    """
+    with tf.device("CPU:0"):
+        return tf.reduce_sum(
+            tf.cast(x[..., 4] == 1, tf.float32)
+        ) / tf.cast(tf.shape(x)[0], tf.float32)
+
+
+def sample_by_content(
+    dataset: tf.data.Dataset,
+    watcher: "RepeatSamplingWatcher",
+    genome: tf.Tensor | int = 0,
+) -> tf.data.Dataset:
+    """Keep sequences with a probability that falls with how much of
+    them is repeat-masked or unassembled, following the acceptance curve
+    of the `watcher`. Unlike the fixed thresholds it replaces this
+    adapts itself to the genome it reads, so the same setting works for
+    a clean and for a repeat-rich species.
+    """
+    def _sample(x, y):
+        return watcher.accept(repeat_fraction(x), n_fraction(x), genome)
+    return dataset.filter(_sample)
 
 
 def masked(

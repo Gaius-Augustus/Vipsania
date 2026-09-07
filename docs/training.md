@@ -77,8 +77,8 @@ it** — at the cost of holding that many windows in memory at once.
 | ------------------------------------- | --------------------------------------------------------- |
 | `dataset.T`                           | context length in nucleotides used during training         |
 | `dataset.B`                           | batch size; lower this first if you run out of GPU memory  |
-| `dataset.indexed_windows_at_once`     | number of windows, and therefore files, read in parallel; defaults to `1` |
-| `dataset.indexed_window_size`         | nucleotides read from a file in one go; defaults to `6_400_000` |
+| `dataset.indexed_windows_at_once`     | number of windows, and therefore files, read in parallel; defaults to `4` |
+| `dataset.indexed_window_size`         | nucleotides read from a file in one go; defaults to `3_200_000` |
 | `trainer.gradient_accumulation_steps` | raise this to keep the effective batch size when lowering `B` |
 | `trainer.epochs`                      | number of epochs                                           |
 | `trainer.train_steps`                 | number of batches per epoch                                |

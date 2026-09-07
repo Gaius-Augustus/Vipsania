@@ -7,7 +7,8 @@ import tensorflow as tf
 from pydantic import BaseModel
 
 from .util import (drop_N_sequences, drop_repeats_sequences, expand_path,
-                   fasta_to_tensors, masked)
+                   fasta_to_tensors, masked, sample_by_content)
+from .watch import RepeatSamplingConfig
 
 if TYPE_CHECKING:
     from .watch import RepeatSamplingWatcher
@@ -31,6 +32,10 @@ class DatasetConfig(BaseModel):
     shuffle: int | None = 10_000
     drop_N_threshold: float = 0.0
     drop_repeats_threshold: float = 0.0
+    repeat_sampling: RepeatSamplingConfig | None = None
+    """Replaces the fixed `drop_repeats_threshold` by a sampling rate
+    that falls with the repeat content and adapts itself to the genome
+    that is read. Set to `None` for the fixed threshold."""
     seed: int | None = None
     repeat_dataset: bool = True
     tile_targets: int = 1
@@ -41,8 +46,8 @@ class DatasetConfig(BaseModel):
     validation_files_at_once: int = 1
 
     indexed_files: bool = False
-    indexed_window_size: int = 6_400_000
-    indexed_windows_at_once: int = 1
+    indexed_window_size: int = 3_200_000
+    indexed_windows_at_once: int = 4
 
     @property
     def input_dim(self) -> int:
@@ -75,6 +80,19 @@ def parallel_files(
     at_once = min(len(files), at_once)
     config = config
 
+    index_table = None
+    if watcher is not None:
+        watcher.bind(len(files), names=[Path(f).name for f in files])
+        # the interleave hands the loader a path and not the position of
+        # that path in the list, so the genome index is looked up again
+        index_table = tf.lookup.StaticHashTable(
+            tf.lookup.KeyValueTensorInitializer(
+                tf.constant([str(f) for f in files]),
+                tf.range(len(files), dtype=tf.int32),
+            ),
+            default_value=0,
+        )
+
     def _path_to_dataset(path_tensor: tf.Tensor) -> tf.data.Dataset:
         def _loader(p: tf.Tensor) -> tuple[tf.Tensor, tf.Tensor]:
             x, y = tf.py_function(
@@ -95,12 +113,17 @@ def parallel_files(
             return x, y
 
         ds = tf.data.Dataset.from_tensors(path_tensor).map(_loader).unbatch()
-        if config.drop_N_threshold > 0:
-            ds = drop_N_sequences(ds, config.drop_N_threshold)
-        if config.drop_repeats_threshold > 0:
-            ds = drop_repeats_sequences(
-                ds, config.drop_repeats_threshold, watcher=watcher,
+        if watcher is not None:
+            # the curve scores repeats and N together and replaces both
+            # fixed thresholds
+            ds = sample_by_content(
+                ds, watcher, index_table.lookup(path_tensor),  # type: ignore
             )
+        else:
+            if config.drop_N_threshold > 0:
+                ds = drop_N_sequences(ds, config.drop_N_threshold)
+            if config.drop_repeats_threshold > 0:
+                ds = drop_repeats_sequences(ds, config.drop_repeats_threshold)
         if config.masking is not None:
             ds = masked(
                 ds,
@@ -169,6 +192,9 @@ def select_from_indexed_files(
 
     if extra is None:
         extra = []
+
+    if watcher is not None:
+        watcher.bind(len(files), names=[Path(f).name for f in files])
 
     fastas = [b2m.io.indexed_fasta(file) for file in files]
     extras = [[f.parent/s for f in files] for s, _, _ in extra]
@@ -256,7 +282,24 @@ def select_from_indexed_files(
             ds_signature,
             tf.nest.flatten(outputs),
         )
-        return tf.data.Dataset.from_tensor_slices(repacked)
+        window_ds = tf.data.Dataset.from_tensor_slices(repacked)
+        # the filtering runs here and not on the merged dataset,
+        # because only inside the window is it still known which genome
+        # the chunks were taken from
+        if watcher is not None:
+            # the curve scores repeats and N together and replaces both
+            # fixed thresholds
+            window_ds = sample_by_content(window_ds, watcher, g)
+        else:
+            if config.drop_N_threshold > 0:
+                window_ds = drop_N_sequences(
+                    window_ds, config.drop_N_threshold,
+                )
+            if config.drop_repeats_threshold > 0:
+                window_ds = drop_repeats_sequences(
+                    window_ds, config.drop_repeats_threshold,
+                )
+        return window_ds
 
     outer = tf.data.Dataset.from_generator(
         sample_window,
@@ -276,12 +319,6 @@ def select_from_indexed_files(
         num_parallel_calls=tf.data.AUTOTUNE,
     )
 
-    if config.drop_N_threshold > 0:
-        ds = drop_N_sequences(ds, config.drop_N_threshold)
-    if config.drop_repeats_threshold > 0:
-        ds = drop_repeats_sequences(
-            ds, config.drop_repeats_threshold, watcher=watcher,
-        )
     if config.masking is not None:
         ds = masked(
             ds,

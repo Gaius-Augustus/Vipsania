@@ -25,17 +25,17 @@
 | `--finetune_epochs` | number of epochs to finetune, defaults to `10`                            |
 | `--finetune_lr`     | learning rate used for finetuning, defaults to `1e-4`                     |
 | `--finetune_B`      | batch size on the GPU; inferred from the available GPU memory by default  |
-| `--drop_repeats`    | only finetune on sequences with low repeat content                        |
-| `--relax_repeats`   | allow more repeats when too few sequences pass that filter                 |
+| `--drop_repeats`    | finetune on sequences below a fixed repeat content instead               |
+| `-fo KEY=VALUE`     | override one entry of the finetuning configuration; repeatable            |
 
 `--finetune_B` only affects how much GPU memory is used; the effective batch size is always 64,
-reached through gradient accumulation. If `--drop_repeats` is not given, it is chosen from the size
-of the input genome.
+reached through gradient accumulation.
 
-On strongly repetitive genomes, sequences below the allowed repeat content can be so rare that
-finding them is what makes a finetuning run slow. Adding `--relax_repeats` lets Vipsania notice
-this, say so, and allow more repeats until the run proceeds at a normal pace; without it the limit
-stays where it was set. Setting `--drop_repeats 0` switches the filter off entirely.
+Sequences that are mostly repeat-masked, or mostly `N`, teach the model very little and can pull it
+in a wrong direction during a short finetuning. Finetuning therefore keeps a sequence at a rate
+that falls with how much of it is repeat-masked or unknown. Where that rate falls off is not fixed
+but measured on your genome while the run proceeds, and reported in the terminal, so the same
+setting works for a clean and for a repeat-rich species.
 
 ## Repeat-masked genomes
 

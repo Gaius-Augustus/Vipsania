@@ -62,7 +62,7 @@ fi
 
 # ── Build ──────────────────────────────────────────────────────────────────
 echo "==> Building ${IMAGE}:${VERSION} and ${IMAGE}:latest ..."
-sudo docker build --pull \
+sudo docker build --pull --platform linux/amd64 \
     --tag "${IMAGE}:${VERSION}" \
     --tag "${IMAGE}:latest" \
     --file Dockerfile \

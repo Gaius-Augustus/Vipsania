@@ -3,8 +3,8 @@
 Pre-built images for Vipsania are published on Docker Hub:
 
 ```
-docker.io/katharinahoff/vipsania          # latest release
-docker.io/katharinahoff/vipsania:1.0.0   # pinned version
+docker.io/gaiusaugustus/vipsania          # latest release
+docker.io/gaiusaugustus/vipsania:1.0.0   # pinned version
 ```
 
 They bundle Vipsania together with all Python dependencies, including TensorFlow
@@ -27,7 +27,7 @@ GPU access is provided by the container runtime, not by a host CUDA stack.
 ### Pull the image
 
 ```bash
-sudo docker pull katharinahoff/vipsania:latest
+sudo docker pull gaiusaugustus/vipsania:latest
 ```
 
 ### Annotate a genome — with GPU (recommended)
@@ -39,7 +39,7 @@ command refer to it.
 ```bash
 sudo docker run --rm --gpus all \
     -v /path/to/your/data:/data \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
 ```
 
@@ -53,7 +53,7 @@ has in total:
 # Inside a SLURM job that requested --gres=gpu:1
 sudo docker run --rm --gpus "device=${CUDA_VISIBLE_DEVICES}" \
     -v /path/to/your/data:/data \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
 ```
 
@@ -65,7 +65,7 @@ genomes.
 ```bash
 sudo docker run --rm \
     -v /path/to/your/data:/data \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania annotate Fungi genome.fa -o annotation.gff3
 ```
 
@@ -79,7 +79,7 @@ directory to keep them across runs:
 sudo docker run --rm --gpus all \
     -v /path/to/your/data:/data \
     -v /path/to/model_cache:/cache/vipsania/models \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
 ```
 
@@ -91,7 +91,7 @@ the models in `/data/models` on the mounted volume:
 sudo docker run --rm --gpus all \
     -v /path/to/your/data:/data \
     -e VIPSANIA_CACHE=/data \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
 ```
 
@@ -105,7 +105,7 @@ Pass a config file and the genome FASTAs through the mounted volume.  Edit
 sudo docker run --rm --gpus all \
     -v /path/to/your/data:/data \
     -v /path/to/model_cache:/cache/vipsania/models \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania train /data/configs/base_10M.json -oc /data/configs/train.json
 ```
 
@@ -118,7 +118,7 @@ sudo docker run --rm --gpus all \
     -v /path/to/your/data:/data \
     -v /path/to/checkpoints:/data/checkpoints \
     -v /path/to/model_cache:/cache/vipsania/models \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania train /data/configs/base_10M.json -oc /data/configs/train.json
 ```
 
@@ -127,7 +127,7 @@ sudo docker run --rm --gpus all \
 ```bash
 sudo docker run --rm -it --gpus all \
     -v /path/to/your/data:/data \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     bash
 ```
 
@@ -142,7 +142,7 @@ which makes them the standard choice on HPC clusters.
 ### Convert the Docker image to a Singularity image file (SIF)
 
 ```bash
-singularity pull vipsania.sif docker://katharinahoff/vipsania:latest
+singularity pull vipsania.sif docker://gaiusaugustus/vipsania:latest
 ```
 
 This downloads and converts the image once; the resulting `vipsania.sif` file
@@ -151,7 +151,7 @@ is portable and can be copied to any machine or cluster that has Singularity.
 Pin a specific release to keep your results reproducible:
 
 ```bash
-singularity pull vipsania_1.0.0.sif docker://katharinahoff/vipsania:1.0.0
+singularity pull vipsania_1.0.0.sif docker://gaiusaugustus/vipsania:1.0.0
 ```
 
 ### Annotate a genome — with GPU (recommended)
@@ -264,7 +264,7 @@ SLURM-assigned GPU rather than claiming all GPUs on the node:
 sudo docker run --rm --gpus "device=${CUDA_VISIBLE_DEVICES}" \
     -v "$SCRATCH/data:/data" \
     -v "$SCRATCH/models:/cache/vipsania/models" \
-    katharinahoff/vipsania \
+    gaiusaugustus/vipsania \
     vipsania annotate Fungi /data/genome.fa -o /data/annotation.gff3 --finetune
 ```
 

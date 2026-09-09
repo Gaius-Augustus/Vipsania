@@ -8,19 +8,19 @@
 # separate CUDA installation (see docs/troubleshooting.md).
 #
 # Build:
-#   sudo docker build -t katharinahoff/vipsania:1.0.0 .
+#   sudo docker build -t gaiusaugustus/vipsania:1.0.0 .
 #
 # Run (with GPU and a local data directory):
 #   sudo docker run --gpus all \
 #       -v /path/to/data:/data \
-#       katharinahoff/vipsania \
+#       gaiusaugustus/vipsania \
 #       vipsania annotate <model_id> genome.fa -o annotation.gff3
 #
 # Persist downloaded models (~100 MB each) across runs:
 #   sudo docker run --gpus all \
 #       -v /path/to/data:/data \
 #       -v /path/to/model_cache:/cache/vipsania/models \
-#       katharinahoff/vipsania \
+#       gaiusaugustus/vipsania \
 #       vipsania annotate <model_id> genome.fa -o annotation.gff3
 # ---------------------------------------------------------------------------
 

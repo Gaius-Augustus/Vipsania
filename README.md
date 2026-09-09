@@ -49,15 +49,15 @@ working on an HPC cluster — use the pre-built image from Docker Hub:
 
 **Docker** (requires `sudo` unless your user is in the `docker` group):
 
-    $ sudo docker pull katharinahoff/vipsania:latest
+    $ sudo docker pull gaiusaugustus/vipsania:latest
     $ sudo docker run --rm --gpus all \
           -v /path/to/data:/data \
-          katharinahoff/vipsania \
+          gaiusaugustus/vipsania \
           vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
 
 **Singularity / Apptainer** (no root needed, suited for HPC):
 
-    $ singularity pull vipsania.sif docker://katharinahoff/vipsania:latest
+    $ singularity pull vipsania.sif docker://gaiusaugustus/vipsania:latest
     $ singularity exec --nv \
           -B /path/to/data:/data \
           vipsania.sif \

@@ -6,7 +6,7 @@
 #
 # Arguments:
 #   dockerhub_user  Docker Hub username to log in as and to prefix the image
-#                   (required).  Example: katharinahoff
+#                   (required).  Example: gaiusaugustus
 #   image_name      Repository / image name (default: vipsania).
 #                   Example: vipsania
 #   version         Version tag (default: value from pyproject.toml, or
@@ -14,9 +14,9 @@
 #                   Example: 1.0.0
 #
 # Examples:
-#   bash docker/build_and_push.sh katharinahoff
-#   bash docker/build_and_push.sh katharinahoff vipsania
-#   bash docker/build_and_push.sh katharinahoff vipsania 1.0.0
+#   bash docker/build_and_push.sh gaiusaugustus
+#   bash docker/build_and_push.sh gaiusaugustus vipsania
+#   bash docker/build_and_push.sh gaiusaugustus vipsania 1.0.0
 #
 # Prerequisites:
 #   1. Docker is installed.
@@ -30,7 +30,7 @@ set -euo pipefail
 # ── Arguments ──────────────────────────────────────────────────────────────
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 <dockerhub_user> [image_name] [version]" >&2
-    echo "  Example: $0 katharinahoff vipsania 1.0.0" >&2
+    echo "  Example: $0 gaiusaugustus vipsania 1.0.0" >&2
     exit 1
 fi
 
@@ -62,7 +62,7 @@ fi
 
 # ── Build ──────────────────────────────────────────────────────────────────
 echo "==> Building ${IMAGE}:${VERSION} and ${IMAGE}:latest ..."
-sudo docker build \
+sudo docker build --pull \
     --tag "${IMAGE}:${VERSION}" \
     --tag "${IMAGE}:latest" \
     --file Dockerfile \

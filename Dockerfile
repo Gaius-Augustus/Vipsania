@@ -8,7 +8,7 @@
 # separate CUDA installation (see docs/troubleshooting.md).
 #
 # Build:
-#   sudo docker build -t gaiusaugustus/vipsania:1.0.0 .
+#   sudo docker build --platform linux/amd64 -t gaiusaugustus/vipsania:1.0.0 .
 #
 # Run (with GPU and a local data directory):
 #   sudo docker run --gpus all \

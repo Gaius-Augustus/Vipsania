@@ -11,6 +11,26 @@ They bundle Vipsania together with all Python dependencies, including TensorFlow
 with its own CUDA libraries, so **no CUDA installation on the host is required**.
 GPU access is provided by the container runtime, not by a host CUDA stack.
 
+## Supported systems
+
+| | |
+| --- | --- |
+| **Architecture** | `linux/amd64` only. There is no arm64 image; TensorFlow's CUDA wheels do not exist for it. If you build the image yourself, pass `--platform linux/amd64` to `docker build` (the build script does), otherwise a build on an Apple-Silicon Mac produces an arm64 image whose `pip install` fails. |
+| **Host OS** | Any Linux with Docker ≥ 20.10 or Singularity/Apptainer. On macOS/Windows, Docker Desktop runs the image in CPU mode only. |
+| **GPU** | NVIDIA GPUs of the Volta, Turing, Ampere, Ada or Hopper generation, with a driver that supports CUDA 12.x (≥ 525 on Linux). The host does not need CUDA itself. |
+| **CPU only** | Works everywhere, but is far too slow for a whole genome. |
+
+Verified by us: NVIDIA A100 under Singularity on a SLURM cluster, and Docker with
+the NVIDIA Container Toolkit on a Linux workstation.
+
+**Known limitation — Blackwell GPUs (B100/B200, GB200, RTX 50xx) do not work.**
+Vipsania requires `tensorflow<2.20`, and the CUDA runtime that these
+TensorFlow releases bundle predates Blackwell (compute capability 10.x/12.x).
+On such a GPU, TensorFlow either finds no usable device and silently falls back
+to the CPU, or fails while loading a kernel. We are aware of this; it will be
+resolved once Vipsania can move to a TensorFlow release with CUDA ≥ 12.8. Until
+then, use an older GPU or run on CPU.
+
 ---
 
 ## Docker

@@ -65,6 +65,15 @@ class RepeatSamplingConfig(BaseModel):
     repeats only and leaves unassembled sequence to
     `drop_N_threshold`."""
 
+    cut_sigmas: float | None = 1.0
+    """Cut the curve off this many `sigma` above the center: a chunk that
+    far past it is never kept, whatever the draw says. Without the cut the
+    curve has a tail, and a tail is what the fixed threshold it replaces
+    never had. On maize a curve and a fixed limit that admit the same mean
+    repeat content differ by 0.04 locus F1, and the difference is that
+    17.8% of what the curve keeps is above 50% repeat. ``0`` makes the
+    curve a hard threshold at the center, ``None`` leaves the tail on."""
+
     upper_limit_N: float = 0.5
     """Chunks with a larger ``N`` fraction than this are always dropped,
     whatever the curve says. The score cannot tell a chunk that is half
@@ -76,7 +85,11 @@ class RepeatSamplingConfig(BaseModel):
 
     sigma: float = 0.1
     """Width of the acceptance curve, in content score. Small values
-    approach a hard filter, large values approach uniform subsampling."""
+    approach a hard filter, large values approach uniform subsampling.
+    Exactly ``0`` is that hard filter: every chunk at or below the center
+    is kept and every chunk above it is dropped, which is the fixed
+    threshold the published models were finetuned with, only with the
+    center measured on the genome instead of fixed beforehand."""
 
     floor: float = 0.25
     """The center never falls below this, which is the fixed threshold
@@ -194,9 +207,9 @@ class RepeatSamplingWatcher:
                 name="repeat_sampling_center",
             )
             self._norm = tf.Variable(
-                tf.fill([n_genomes], _phi(
-                    self.config.floor / self.config.sigma
-                )),
+                tf.fill([n_genomes], self._normalizer(
+                    np.array(self.config.floor, dtype=np.float32)
+                ).item()),
                 dtype=tf.float32,
                 trainable=False,
                 name="repeat_sampling_norm",
@@ -227,6 +240,15 @@ class RepeatSamplingWatcher:
                 trainable=False,
                 name="repeat_sampling_seen",
             )
+
+    def _normalizer(self, centers: np.ndarray) -> np.ndarray:
+        """The divisor that keeps a chunk without any repeats at a
+        sampling rate of one. A hard filter needs none."""
+        if self.config.sigma <= 0:
+            return np.ones_like(centers)
+        return 0.5 * (1.0 + np.vectorize(math.erf)(
+            centers / (self.config.sigma * SQRT2)
+        )).astype(np.float32)
 
     @property
     def warming_up(self) -> bool:
@@ -268,10 +290,13 @@ class RepeatSamplingWatcher:
             )
             with tf.control_dependencies([counted]):
                 mu = tf.gather(self._mu, g)
-                norm = tf.gather(self._norm, g)
-                a = 0.5 * (
-                    1.0 + tf.math.erf((mu - x) / (self.config.sigma * SQRT2))
-                ) / norm
+                if self.config.sigma > 0:
+                    norm = tf.gather(self._norm, g)
+                    a = 0.5 * (1.0 + tf.math.erf(
+                        (mu - x) / (self.config.sigma * SQRT2)
+                    )) / norm
+                else:
+                    a = tf.cast(x <= mu, tf.float32)
                 # a stateless draw keyed on the running count, so that the
                 # decisions do not repeat and stay independent of how many
                 # threads the pipeline happens to use
@@ -284,6 +309,11 @@ class RepeatSamplingWatcher:
                 keep = tf.logical_and(
                     u < a, unassembled <= self.config.upper_limit_N,
                 )
+                if self.config.cut_sigmas is not None:
+                    keep = tf.logical_and(
+                        keep,
+                        x <= mu + self.config.cut_sigmas * self.config.sigma,
+                    )
             f = tf.cast(keep, tf.float32)
             kept = self._kept.scatter_nd_add(
                 tf.reshape(g, (1, 1)), tf.reshape(f, (1,)),
@@ -351,9 +381,7 @@ class RepeatSamplingWatcher:
             self._fitted[g] = True
 
         self._mu.assign(centers)
-        self._norm.assign(0.5 * (
-            1.0 + tf.math.erf(centers / (self.config.sigma * SQRT2))
-        ))
+        self._norm.assign(self._normalizer(centers))
         self.refinements += 1
 
         if self.config.verbose:

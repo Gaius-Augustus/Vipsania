@@ -100,26 +100,43 @@ shipped configurations follow the same rule with `B = 8` and 8 accumulation step
 
 ## Species with a non-standard genetic code
 
-The HMM does not assume a genetic code, it is told one. It is possible to simply use one of the
-pre-defined NCBI translation tables by adding the command line flag `--translation_table [int]`, where
-`[int]` is the number of the desired translation table. If used, this flag will override any specifications
-in the `hmm` section of the JSON configuration.
+The HMM does not infer a genetic code, it is told one. The shortest way to say it is
+`--translation_table`, which takes the number of one of the NCBI translation tables:
 
-The translation table can alternatively be specified in the `hmm` section like this:
+    $ vipsania train configs/base_25M.json --translation_table 6
+
+The start and stop codons of the HMM are then read off that table. `1` is the standard code and `6`
+the ciliate one, which reads `TAA` and `TAG` as glutamine and stops only at `TGA`. The supported
+numbers are the ones the NCBI defines. Only `start_codons` and `stop_codons` come from the table.
+
+Apart from the standard code, which stays restricted to `ATG`, a table contributes all of the
+alternative initiation codons the NCBI lists for it, each with the same share of the probability.
+Table 4 for instance opens a gene at any of eight codons.
+
+The same can be written into the `hmm` section instead, which keeps a configuration self-contained:
 
 ```json
 "hmm": {
-    "translation_table": 1,
-    "intron_begin_pattern": [["NGT", 0.99], ["NGC", 0.01]],
-    "intron_end_pattern": [["AGN", 1.0]]
+    "translation_table": 6
 }
 ```
 
-When a translation table is specified, the corresponding start and stop codons are determined
-automatically from that table.
+### The genetic code belongs to the model
 
-The HMM can also be configured manually. In this case, four entries in the `hmm` section spell
-out which codons start and end a gene and which patterns flank an intron. They are not written in the
+The codons are not merely a setting that is read at every start. They are built into the emission
+distributions of the HMM when the model is created, and from then on they are stored in the
+checkpoint like any other weight. A trained model therefore carries its genetic code with it.
+
+The code is also written to the `config.json` of the run, and every later command takes it from
+there. `--resume`, `--fork`, `vipsania annotate` and `vipsania annotate --finetune` all continue
+with the code the model was trained with, and none of them needs the option repeated. A checkpoint
+cannot be carried over to a different code. So a genome with a non-standard code needs a model
+trained for that code.
+
+### Writing the codons out by hand
+
+The HMM can also be told its codons directly. Four entries of the `hmm` section spell out which
+codons start and end a gene and which patterns flank an intron. They are not written in the
 shipped configurations because every model so far uses the standard code, which is what these
 fields default to:
 
@@ -132,11 +149,15 @@ fields default to:
 }
 ```
 
-To train on species that deviate, you can copy these four lines into the `hmm` section of your
+To train on species that deviate, copy these four lines into the `hmm` section of your
 [configs/train.json](/configs/train.json) configuration and edit them. Each entry is a list of
 `[pattern, probability]` pairs whose probabilities should sum to one, and `N` stands for any
 nucleotide, so `NGT` is the usual GT donor together with the preceding base and `AGN` the AG
 acceptor.
+
+The same mechanism covers non-canonical splice sites: extend `intron_begin_pattern` or
+`intron_end_pattern` with the additional motifs and give each a share of the probability.
+
 
 ## Running a training
 

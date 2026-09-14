@@ -5,7 +5,7 @@ These pages go into detail.
 
 | page | contents |
 | ---- | -------- |
-| [annotate.md](/docs/annotate.md) | options of `vipsania annotate`, notes on repeat masking |
+| [annotate.md](/docs/annotate.md) | options of `vipsania annotate`, non-standard genetic codes, notes on repeat masking |
 | [training.md](/docs/training.md) | training on your own genomes, continuing from a published model, GPU memory, non-standard genetic codes |
 | [download.md](/docs/download.md) | where models are stored, fetching them in advance |
 | [troubleshooting.md](/docs/troubleshooting.md) | what to check when no GPU is found |

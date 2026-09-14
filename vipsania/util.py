@@ -86,6 +86,7 @@ def load_runconfig(
     override_trainer: dict[str, Any] | None = None,
     resume: str | None = None,
     translation_table: int | None = None,
+    load_weights: bool = False,
 ) -> RunConfig:
     with open(file, "r") as f:
         total_dict = json.load(f)
@@ -97,6 +98,15 @@ def load_runconfig(
         raise ValueError(
             "A total config has to consist of model, dataset and trainer."
         )
+
+    # The genetic code the stored weights were built for. Read before any
+    # override is applied, so that it is the code of the checkpoint and not
+    # the one that is being asked for. A config without the entry is a model
+    # from before the option existed, which is the standard code.
+    stored_hmm = total_dict["model"].get("hmm")
+    stored_translation_table = 1
+    if isinstance(stored_hmm, dict):
+        stored_translation_table = stored_hmm.get("translation_table") or 1
 
     if override_model is not None:
         total_dict["model"] = deep_update(total_dict["model"], override_model)
@@ -120,6 +130,18 @@ def load_runconfig(
         if translation_table is None:
             translation_table = hmm_config.get("translation_table")
         if translation_table is not None:
+            if load_weights and translation_table != stored_translation_table:
+                raise ValueError(
+                    f"The weights of {file} were trained with translation "
+                    f"table {stored_translation_table}, but translation table "
+                    f"{translation_table} was requested. The start and stop "
+                    "codons are part of the stored weights, so loading them "
+                    "would put the trained genetic code back in place and the "
+                    "requested one would be silently ignored. Train a model "
+                    f"with --translation_table {translation_table} instead, or "
+                    "leave the option out to use this model with the code it "
+                    "was trained with."
+                )
             hmm_config["translation_table"] = translation_table
 
             from bricks2marble.struct.start_stop_codons import (get_start_codons, get_stop_codons)
@@ -266,6 +288,7 @@ def create_model(
         override_trainer=override_trainer,
         resume=config_or_id if load else None,
         translation_table=translation_table,
+        load_weights=load,
     )
 
     model = Vipsania(**config.model.model_dump())

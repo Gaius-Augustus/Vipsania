@@ -346,7 +346,9 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
     )
     common.add_argument(
         "--translation_table",
-        help="Select one of the NCBI translation tables.",
+        help="number of the NCBI translation table the model was trained "
+             "with; taken from the model itself if not given, and a different "
+             "one is refused, as the genetic code is part of the weights",
         default=None,
         type=int,
     )

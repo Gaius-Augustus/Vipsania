@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vipsania"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   { name="Richard Krieg", email="irkri@irkri.net" },
   { name="Mario Stanke", email="mario.stanke@uni-greifswald.de" },
@@ -35,7 +35,8 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    "bricks2marble[tf]",
+    # 0.1.2 brings the NCBI translation tables that --translation_table needs
+    "bricks2marble[tf]>=0.1.2",
     "tensorflow<2.20",
     "wandb"
 ]

@@ -183,7 +183,9 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--translation_table",
-        help="Select one of the NCBI translation tables.",
+        help="number of the NCBI translation table to train for, e.g. 6 for "
+             "ciliates; defaults to the standard code. The code becomes part "
+             "of the model and cannot be changed afterwards",
         default=None,
         type=int,
     )

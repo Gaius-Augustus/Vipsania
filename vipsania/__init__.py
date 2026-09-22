@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import cli, data, hub, model, util, xai
     from .annotate import annotate_genome
+    from .embed import embed_fasta
     from .train import Trainer, TrainerConfig
     from .util import create_model
 
@@ -13,6 +14,7 @@ __all__ = [
     "cli",
     "create_model",
     "data",
+    "embed_fasta",
     "hub",
     "model",
     "util",
@@ -24,6 +26,7 @@ _ATTRIBUTES = {
     "Trainer": ".train",
     "TrainerConfig": ".train",
     "annotate_genome": ".annotate",
+    "embed_fasta": ".embed",
     "create_model": ".util",
 }
 

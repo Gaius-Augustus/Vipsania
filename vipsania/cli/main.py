@@ -1,10 +1,11 @@
 import argparse
 from typing import Sequence
 
-from . import annotate, download, train
+from . import annotate, download, embed, train
 
 COMMANDS = {
     "annotate": annotate,
+    "embed": embed,
     "train": train,
     "download": download,
 }

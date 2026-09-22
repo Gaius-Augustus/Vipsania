@@ -119,6 +119,9 @@ class LRUConfig(VipsaniaLayerConfig):
     """Memorize and adapt an initial state of the LRU recursion for
     improved length generalization. The given float is the rate of
     updating the internal memory."""
+    initial_state_at_inference: bool = False
+    """Also start the recursion from the memorized initial state outside
+    of training. The memory itself is only ever updated while training."""
 
     max_tree_depth: int = 14
 
@@ -244,7 +247,9 @@ class LRU(tf.keras.layers.Layer):
             max_num_levels=self.tree_depth,
             axis=-2,
         )
-        if training and (m := self.config.initial_state_memory) is not None:
+        if (m := self.config.initial_state_memory) is not None and (
+            training or self.config.initial_state_at_inference
+        ):
             T = tf.shape(x)[-2]
             A_t = tf.pow(
                 tf.tile(A[tf.newaxis, :], [T, 1]),
@@ -254,6 +259,7 @@ class LRU(tf.keras.layers.Layer):
                 tf.complex(real=self.q_0_re, imag=self.q_0_im), axis=0,
             )
             x = x + Aq_0
+        if training and m is not None:
             next_q_0 = tf.reduce_mean(x[:, -1, :], axis=0)
             self.q_0_re.assign(
                 m * self.q_0_re + (1 - m) * tf.math.real(next_q_0)

@@ -184,6 +184,23 @@ annotations of the same genome or closely related species without finetuning aga
 All options of the annotation are listed in [docs/annotate.md](/docs/annotate.md), or with
 `vipsania annotate --help`.
 
+## Evidence integration (Paludamentum)
+
+[Paludamentum](https://github.com/Gaius-Augustus/Paludamentum) is the Nextflow pipeline around the
+gene finders of the Gaius-Augustus family. With Vipsania as gene finder it splits the genome, runs
+`vipsania annotate` on several GPUs in parallel, and, if you give it proteins, RNA-Seq or Iso-Seq,
+derives high-confidence genes from that evidence and merges them with the Vipsania prediction.
+Vipsania is a git submodule of Paludamentum; the `vipsania` command itself does not run the
+pipeline.
+
+    $ git clone --recursive https://github.com/Gaius-Augustus/Paludamentum
+    $ cd Paludamentum && pip install .
+    $ paludamentum --genefinder vipsania --nf_config slurm_generic --genome genome.fa --model Fungi \
+          --proteins proteins.faa
+
+Finetuning is off in the pipeline by default; `--finetune` switches it on and then runs one
+Vipsania task on the whole genome. See [docs/pipeline.md](/docs/pipeline.md).
+
 ## Training
 
 Vipsania models are trained with `vipsania train` on a set of local FASTA files. Ready-to-use

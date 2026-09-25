@@ -10,6 +10,7 @@ These pages go into detail.
 | [download.md](/docs/download.md) | where models are stored, fetching them in advance |
 | [container.md](/docs/container.md) | running Vipsania with Docker or Singularity/Apptainer, with and without GPU |
 | [troubleshooting.md](/docs/troubleshooting.md) | what to check when no GPU is found |
+| [pipeline.md](/docs/pipeline.md) | Vipsania inside the Paludamentum evidence integration pipeline (multi-GPU runs, proteins, RNA-Seq, Iso-Seq) |
 | [example](/docs/example) | a chromosome and the annotation Vipsania produced for it, to test an installation |
 
 Two tables record which species were involved in each model:

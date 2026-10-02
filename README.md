@@ -64,13 +64,11 @@ working on an HPC cluster — use the pre-built image from Docker Hub:
           vipsania annotate Fungi /data/genome.fa -o /data/annotation.gff3 --finetune
 
 Drop `--gpus all` (Docker) or `--nv` (Singularity) for CPU-only runs. The
-image bundles TensorFlow's own CUDA libraries, so **no CUDA installation on
-the host is required** — only the NVIDIA driver for GPU runs. The image is
-`linux/amd64` only and works on NVIDIA GPUs up to the Hopper generation;
-**Blackwell GPUs (B200, RTX 50xx) are not yet supported**, because Vipsania
-needs `tensorflow<2.20`. Full details, including supported systems,
-model-cache persistence and training, are in
-[docs/container.md](/docs/container.md).
+image is based on NVIDIA's NGC TensorFlow container (TensorFlow 2.17 with
+CUDA 12.8), so **no CUDA installation on the host is required** — only an
+NVIDIA driver ≥ 570 for GPU runs. The image is `linux/amd64` only and also
+supports Blackwell GPUs (e.g. RTX PRO 6000, B200, RTX 50xx). Full details, including supported systems, model-cache
+persistence and training, are in [docs/container.md](/docs/container.md).
 
 ## Annotating a genome
 

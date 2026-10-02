@@ -7,29 +7,30 @@ docker.io/gaiusaugustus/vipsania          # latest release
 docker.io/gaiusaugustus/vipsania:1.0.0   # pinned version
 ```
 
-They bundle Vipsania together with all Python dependencies, including TensorFlow
-with its own CUDA libraries, so **no CUDA installation on the host is required**.
+They are based on NVIDIA's NGC TensorFlow container
+(`nvcr.io/nvidia/tensorflow:25.02-tf2-py3`: TensorFlow 2.17 built by NVIDIA
+with CUDA 12.8 and cuDNN 9) and bundle Vipsania with all Python dependencies,
+so **no CUDA installation on the host is required**.
 GPU access is provided by the container runtime, not by a host CUDA stack.
 
 ## Supported systems
 
 | | |
 | --- | --- |
-| **Architecture** | `linux/amd64` only. There is no arm64 image; TensorFlow's CUDA wheels do not exist for it. If you build the image yourself, pass `--platform linux/amd64` to `docker build` (the build script does), otherwise a build on an Apple-Silicon Mac produces an arm64 image whose `pip install` fails. |
+| **Architecture** | `linux/amd64` only. There is no arm64 image. If you build the image yourself, pass `--platform linux/amd64` to `docker build` (the build script does), otherwise a build on an Apple-Silicon Mac produces an arm64 image. |
 | **Host OS** | Any Linux with Docker ≥ 20.10 or Singularity/Apptainer. On macOS/Windows, Docker Desktop runs the image in CPU mode only. |
-| **GPU** | NVIDIA GPUs of the Volta, Turing, Ampere, Ada or Hopper generation, with a driver that supports CUDA 12.x (≥ 525 on Linux). The host does not need CUDA itself. |
+| **GPU** | NVIDIA GPUs up to and including the Blackwell generation (supported architectures: see the release notes of NVIDIA's NGC TensorFlow container 25.02), with a driver that supports CUDA 12.8 (≥ 570 on Linux; data-center GPUs can also use older drivers in CUDA forward-compatibility mode, see NVIDIA's NGC release notes). The host does not need CUDA itself. |
 | **CPU only** | Works everywhere, but is far too slow for a whole genome. |
 
-Verified by us: NVIDIA A100 under Singularity on a SLURM cluster, and Docker with
-the NVIDIA Container Toolkit on a Linux workstation.
+Verified by us: NVIDIA RTX PRO 6000 Blackwell (compute capability 12.0) under
+Singularity on a SLURM cluster. Earlier, PyPI-based images were verified on
+NVIDIA A100 under Singularity and with Docker and the NVIDIA Container Toolkit
+on a Linux workstation.
 
-**Known limitation — Blackwell GPUs (B100/B200, GB200, RTX 50xx) do not work.**
-Vipsania requires `tensorflow<2.20`, and the CUDA runtime that these
-TensorFlow releases bundle predates Blackwell (compute capability 10.x/12.x).
-On such a GPU, TensorFlow either finds no usable device and silently falls back
-to the CPU, or fails while loading a kernel. We are aware of this; it will be
-resolved once Vipsania can move to a TensorFlow release with CUDA ≥ 12.8. Until
-then, use an older GPU or run on CPU.
+**Blackwell GPUs** need an image built from the current, NGC-based Dockerfile.
+Images built before that used TensorFlow from PyPI, whose CUDA 12.5 runtime has no
+kernels for Blackwell and fails with `CUDA_ERROR_INVALID_PTX`. The same applies
+to a local `pip install` of Vipsania: on Blackwell GPUs, use the container.
 
 ---
 
@@ -301,7 +302,7 @@ exposing the GPU correctly.  Check:
 - **Singularity**: confirm `singularity exec --nv vipsania.sif nvidia-smi`
   prints the GPU list.  If it fails, the host driver may be too old; update it
   or contact your system administrator.
-- **LD_LIBRARY_PATH**: the container entrypoint already sets this to
-  TensorFlow's bundled CUDA libraries.  If you launch the container's Python
-  directly (bypassing the entrypoint) you may need to set it manually — see
-  [troubleshooting.md](troubleshooting.md).
+- **LD_LIBRARY_PATH**: not needed in the container; TensorFlow uses the CUDA
+  libraries of the NGC base image. The `LD_LIBRARY_PATH` fix in
+  [troubleshooting.md](troubleshooting.md) only applies to local `pip`
+  installations.

@@ -9,7 +9,7 @@
 # in CUDA forward-compatibility mode, see the NGC release notes).
 #
 # Build:
-#   sudo docker build --platform linux/amd64 -t gaiusaugustus/vipsania:1.0.0 .
+#   sudo docker build --platform linux/amd64 -t gaiusaugustus/vipsania:1.0.1 .
 #
 # Run (with GPU and a local data directory):
 #   sudo docker run --gpus all \
@@ -40,7 +40,7 @@ RUN python3 -m pip install --no-cache-dir --upgrade "keras>=3,<4"
 
 LABEL org.opencontainers.image.title="Vipsania" \
       org.opencontainers.image.description="Unsupervised deep-learning ab-initio gene finder for eukaryotic genomes" \
-      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.version="1.0.1" \
       org.opencontainers.image.source="https://github.com/gaius-augustus/vipsania" \
       org.opencontainers.image.authors="Richard Krieg <irkri@irkri.net>, Mario Stanke <mario.stanke@uni-greifswald.de>" \
       org.opencontainers.image.licenses="MIT"
@@ -58,12 +58,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /opt/vipsania
 COPY . /opt/vipsania/
 
+# bricks2marble 0.1.2 (translation tables for --translation_table) is not on
+# PyPI yet, so it is installed from the commit that merged it (PR #10).
 # Not a plain `pip install .`: bricks2marble[tf] -> hidten[tensorflow]
 # requires tensorflow[and-cuda], which would pull PyPI TensorFlow/CUDA wheels
 # on top of the NGC stack. So Vipsania and the TF-dependent packages are
 # installed without dependencies and the remaining ones explicitly.
 # protobuf<5: TensorFlow 2.17 needs it; recent wandb would pull protobuf 7.
-RUN python3 -m pip install --no-cache-dir --no-deps . "bricks2marble>=0.1.1" hidten \
+RUN python3 -m pip install --no-cache-dir --no-deps . "bricks2marble @ https://github.com/Gaius-Augustus/bricks2marble/archive/305be1aef17084524717b3f569cfd2196aa0fb2c.tar.gz" hidten \
     && python3 -m pip install --no-cache-dir numpy pydantic wandb "protobuf<5"
 
 # ── Model cache ────────────────────────────────────────────────────────────

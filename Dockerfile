@@ -65,7 +65,7 @@ COPY . /opt/vipsania/
 # on top of the NGC stack. So Vipsania and the TF-dependent packages are
 # installed without dependencies and the remaining ones explicitly.
 # protobuf<5: TensorFlow 2.17 needs it; recent wandb would pull protobuf 7.
-RUN python3 -m pip install --no-cache-dir --no-deps . "bricks2marble @ https://github.com/Gaius-Augustus/bricks2marble/archive/305be1aef17084524717b3f569cfd2196aa0fb2c.tar.gz" hidten \
+RUN python3 -m pip install --no-cache-dir --no-deps . "bricks2marble @ https://codeload.github.com/Gaius-Augustus/bricks2marble/tar.gz/305be1aef17084524717b3f569cfd2196aa0fb2c" hidten \
     && python3 -m pip install --no-cache-dir numpy pydantic wandb "protobuf<5"
 
 # ── Model cache ────────────────────────────────────────────────────────────

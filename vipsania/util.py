@@ -138,13 +138,14 @@ def load_runconfig(
                     "codons are part of the stored weights, so loading them "
                     "would put the trained genetic code back in place and the "
                     "requested one would be silently ignored. Train a model "
-                    f"with --translation_table {translation_table} instead, or "
-                    "leave the option out to use this model with the code it "
-                    "was trained with."
+                    f"with --translation_table {translation_table} instead, "
+                    "or leave the option out to use this model with the code "
+                    "it was trained with."
                 )
             hmm_config["translation_table"] = translation_table
 
-            from bricks2marble.struct.start_stop_codons import (get_start_codons, get_stop_codons)
+            from bricks2marble.struct.start_stop_codons import (
+                get_start_codons, get_stop_codons)
 
             new_start_codons = get_start_codons(translation_table)
             new_stop_codons = get_stop_codons(translation_table)

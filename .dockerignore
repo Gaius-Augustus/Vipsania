@@ -1,0 +1,29 @@
+# Git metadata (not needed in the image)
+.git
+.gitignore
+
+# Python build artefacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Test / lint caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+
+# Example data (large FASTA; users mount their own data at /data)
+docs/example/*.fa
+docs/example/*.gff*
+docs/example/*.log
+
+# Editor / OS artefacts
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/

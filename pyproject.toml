@@ -35,7 +35,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    # 0.1.2 brings the NCBI translation tables that --translation_table needs
     "bricks2marble[tf]>=0.1.2",
     "tensorflow<2.20",
     "wandb"

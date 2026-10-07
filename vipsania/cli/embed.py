@@ -25,6 +25,7 @@ def embed_model(
     dtype: Literal["float32", "float16"] = "float32",
     parallel: int | None = None,
     jit_compile: bool = True,
+    translation_table: int | None = None,
 ) -> None:
     os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
 
@@ -57,6 +58,7 @@ def embed_model(
         load=True,
         default_weights_name=weight_name,
         id_parent_folder=model_dir,
+        translation_table=translation_table,
     )
 
     if parallel is None:
@@ -215,6 +217,14 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         default="latest_checkpoint.weights.h5",
         type=str,
     )
+    common.add_argument(
+        "--translation_table",
+        help="number of the NCBI translation table the model was trained "
+             "with; taken from the model itself if not given, and a different "
+             "one is refused, as the genetic code is part of the weights",
+        default=None,
+        type=int,
+    )
 
     performance = parser.add_argument_group("performance")
     performance.add_argument(
@@ -267,6 +277,7 @@ def run(args: argparse.Namespace) -> None:
         dtype=args.dtype,
         parallel=args.p,
         jit_compile=not (args.nojit or args.exact),
+        translation_table=args.translation_table,
     )
 
 

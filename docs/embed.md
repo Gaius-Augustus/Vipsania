@@ -17,20 +17,21 @@ with h5py.File("embeddings.h5") as f:
 
 ## Common options
 
-| option               | meaning                                                              |
-| -------------------- | -------------------------------------------------------------------- |
-| `-o`, `--output`     | output HDF5 file                                                      |
-| `-l`, `--layer`      | one or more layers the residual stream is taken from, defaults to `7` |
-| `-s`, `--stripe`     | stripe within each layer, defaults to `2`                             |
-| `-T`, `--context`    | genome context length in nucleotides, defaults to `200_000`           |
-| `-B`, `--batch_size` | batch size; inferred from the available GPU memory by default         |
-| `--exact`            | embed every sequence at its own length, without padding               |
-| `--dtype`            | `float32` (default) or `float16`, which halves the file size          |
-| `-i`, `--include`    | only embed the named sequences                                        |
-| `-e`, `--exclude`    | skip the named sequences                                              |
-| `--model_dir`        | directory containing the model folder; skips the automatic download   |
-| `--weights`          | file name of the weights inside the model folder                      |
-| `--keep_seqnames`    | do not strip sequence names at the first whitespace character         |
+| option                | meaning                                                              |
+| --------------------- | -------------------------------------------------------------------- |
+| `-o`, `--output`      | output HDF5 file                                                      |
+| `-l`, `--layer`       | one or more layers the residual stream is taken from, defaults to `7` |
+| `-s`, `--stripe`      | stripe within each layer, defaults to `2`                             |
+| `-T`, `--context`     | genome context length in nucleotides, defaults to `200_000`           |
+| `-B`, `--batch_size`  | batch size; inferred from the available GPU memory by default         |
+| `--exact`             | embed every sequence at its own length, without padding               |
+| `--dtype`             | `float32` (default) or `float16`, which halves the file size          |
+| `-i`, `--include`     | only embed the named sequences                                        |
+| `-e`, `--exclude`     | skip the named sequences                                              |
+| `--model_dir`         | directory containing the model folder; skips the automatic download  |
+| `--weights`           | file name of the weights inside the model folder                     |
+| `--keep_seqnames`     | do not strip sequence names at the first whitespace character        |
+| `--translation_table` | NCBI translation table the model was trained with; a different one is refused, as in [annotate](/docs/annotate.md#species-with-a-non-standard-genetic-code) |
 
 ## Layers and stripes
 

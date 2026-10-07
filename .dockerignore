@@ -3,9 +3,9 @@
 .gitignore
 
 # Python build artefacts
-__pycache__/
-*.py[cod]
-*.egg-info/
+**/__pycache__/
+**/*.py[cod]
+**/*.egg-info/
 dist/
 build/
 .eggs/
@@ -22,8 +22,8 @@ docs/example/*.gff*
 docs/example/*.log
 
 # Editor / OS artefacts
-.DS_Store
-*.swp
-*.swo
+**/.DS_Store
+**/*.swp
+**/*.swo
 .vscode/
 .idea/

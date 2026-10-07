@@ -99,6 +99,7 @@ def run(args: argparse.Namespace) -> None:
         verbose=int(args.online is None),
         online=args.online,
         override_config=override_config,
+        translation_table=args.translation_table,
     )
 
     if args.mirrored:
@@ -179,6 +180,14 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         "--summary",
         action="store_true",
         help="only build the model and print its summary, do not train",
+    )
+    parser.add_argument(
+        "--translation_table",
+        help="number of the NCBI translation table to train for, e.g. 6 for "
+             "ciliates; defaults to the standard code. The code becomes part "
+             "of the model and cannot be changed afterwards",
+        default=None,
+        type=int,
     )
 
 

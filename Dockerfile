@@ -3,9 +3,10 @@
 # https://github.com/gaius-augustus/vipsania
 #
 # Requires NVIDIA Container Toolkit on the host for GPU access.
-# TensorFlow ships its own CUDA libraries; LD_LIBRARY_PATH is set by the
-# entrypoint so TF reliably finds them even on hosts that already have a
-# separate CUDA installation (see docs/troubleshooting.md).
+# Based on NVIDIA's NGC TensorFlow image: TensorFlow 2.17.0+nv25.2 with
+# CUDA 12.8 and cuDNN 9, built for all GPU generations up to Blackwell
+# (sm_120). Host needs an NVIDIA driver >= 570 (data-center GPUs: older drivers
+# in CUDA forward-compatibility mode, see the NGC release notes).
 #
 # Build:
 #   sudo docker build --platform linux/amd64 -t gaiusaugustus/vipsania:1.0.0 .
@@ -24,11 +25,22 @@
 #       vipsania annotate <model_id> genome.fa -o annotation.gff3
 # ---------------------------------------------------------------------------
 
-FROM python:3.12-slim
+FROM nvcr.io/nvidia/tensorflow:25.02-tf2-py3
+
+USER root
+
+# Record the Python packages of the NGC base image. The check at the end of
+# this file fails the build if a later pip install replaced NGC's TensorFlow or
+# added PyPI CUDA/cuDNN wheels next to it (those predate Blackwell).
+RUN python3 -c "import importlib.metadata as m; print('\n'.join(sorted(d.metadata['Name'].lower().replace('_', '-') + '==' + d.version for d in m.distributions())))" > /opt/ngc-base-packages.txt
+
+# Vipsania uses Keras 3 (tf.keras.Layer); NGC defaults to legacy Keras 2
+ENV TF_USE_LEGACY_KERAS=0
+RUN python3 -m pip install --no-cache-dir --upgrade "keras>=3,<4"
 
 LABEL org.opencontainers.image.title="Vipsania" \
       org.opencontainers.image.description="Unsupervised deep-learning ab-initio gene finder for eukaryotic genomes" \
-      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.version="1.0.2" \
       org.opencontainers.image.source="https://github.com/gaius-augustus/vipsania" \
       org.opencontainers.image.authors="Richard Krieg <irkri@irkri.net>, Mario Stanke <mario.stanke@uni-greifswald.de>" \
       org.opencontainers.image.licenses="MIT"
@@ -46,8 +58,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /opt/vipsania
 COPY . /opt/vipsania/
 
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir .
+# Not a plain `pip install .`: bricks2marble[tf] -> hidten[tensorflow]
+# requires tensorflow[and-cuda], which would pull PyPI TensorFlow/CUDA wheels
+# on top of the NGC stack. So Vipsania and the TF-dependent packages are
+# installed without dependencies and the remaining ones explicitly.
+# protobuf<5: TensorFlow 2.17 needs it; recent wandb would pull protobuf 7.
+RUN python3 -m pip install --no-cache-dir --no-deps . "bricks2marble>=0.1.2" hidten \
+    && python3 -m pip install --no-cache-dir numpy pydantic wandb "protobuf<5"
 
 # ── Model cache ────────────────────────────────────────────────────────────
 # Models are downloaded on first use to $VIPSANIA_CACHE/models = /cache/vipsania/models.
@@ -57,31 +74,22 @@ ENV VIPSANIA_CACHE=/cache/vipsania
 RUN mkdir -p /cache/vipsania/models
 VOLUME ["/cache/vipsania/models"]
 
-# ── Entrypoint ─────────────────────────────────────────────────────────────
-# Sets LD_LIBRARY_PATH to TF's bundled CUDA libs before exec-ing the
-# requested command (see docs/troubleshooting.md for the rationale).
-# Inlined as base64 so the Dockerfile is self-contained and does not require
-# docker/entrypoint.sh to be present in the build context.
-RUN echo \
-    'IyEvdXNyL2Jpbi9lbnYgYmFzaAojIFZpcHNhbmlhIERvY2tlciBlbnRyeXBvaW50CiMKIyBTZXRz' \
-    'IExEX0xJQlJBUllfUEFUSCB0byBUZW5zb3JGbG93J3MgYnVuZGxlZCBDVURBIGxpYnJhcmllcyBz' \
-    'byB0aGUgR1BVCiMgaXMgZGlzY292ZXJlZCBjb3JyZWN0bHkgZXZlbiB3aGVuIGEgc3lzdGVtLXdp' \
-    'ZGUgQ1VEQSBpbnN0YWxsYXRpb24gaXMKIyBwcmVzZW50IG9uIHRoZSBob3N0LiAgVGhpcyBtaXJy' \
-    'b3JzIHRoZSBmaXggaW4gZG9jcy90cm91Ymxlc2hvb3RpbmcubWQuCiMKIyBBZnRlciBwYXRjaGlu' \
-    'ZyB0aGUgcGF0aCwgdGhlIGVudHJ5cG9pbnQgZXhlYy1yZXBsYWNlcyBpdHNlbGYgd2l0aCB0aGUK' \
-    'IyBjb21tYW5kIHBhc3NlZCBieSB0aGUgY2FsbGVyIChlLmcuIHZpcHNhbmlhIGFubm90YXRlIC4u' \
-    'LikuCgpzZXQgLWV1byBwaXBlZmFpbAoKIyBDb2xsZWN0IGFsbCBudmlkaWEvKi9saWIgcGF0aHMg' \
-    'aW5zdGFsbGVkIGJ5IHRoZSBURiBwaXAgcGFja2FnZXMuClRGX0NVREE9JChweXRob24gLWMgImlt' \
-    'cG9ydCBzaXRlLCBnbG9iLCBvczsgcHJpbnQoJzonLmpvaW4oc29ydGVkKGdsb2IuZ2xvYihvcy5w' \
-    'YXRoLmpvaW4oc2l0ZS5nZXRzaXRlcGFja2FnZXMoKVswXSwgJ252aWRpYScsICcqJywgJ2xpYicp' \
-    'KSkpKSIgMj4vZGV2L251bGwgfHwgdHJ1ZSkKCmlmIFsgLW4gIiR7VEZfQ1VEQX0iIF07IHRoZW4K' \
-    'ICAgIGV4cG9ydCBMRF9MSUJSQVJZX1BBVEg9IiR7VEZfQ1VEQX0ke0xEX0xJQlJBUllfUEFUSDor' \
-    'OiR7TERfTElCUkFSWV9QQVRIfX0iCmZpCgpleGVjICIkQCIK' \
-    | tr -d ' \n' | base64 -d > /usr/local/bin/entrypoint.sh \
-    && chmod +x /usr/local/bin/entrypoint.sh
-
 # ── Working directory for user data ───────────────────────────────────────
 WORKDIR /data
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Fail the build if the NGC TensorFlow/CUDA stack was modified (see top of file)
+RUN python3 -c "import importlib.metadata as m, sys; \
+base = set(open('/opt/ngc-base-packages.txt').read().split()); \
+now = {d.metadata['Name'].lower().replace('_', '-') + '==' + d.version for d in m.distributions()}; \
+added = sorted(p for p in now - base if p.startswith(('nvidia-', 'tensorflow'))); \
+tf = m.version('tensorflow'); \
+sys.exit(f'NGC TensorFlow stack modified: tensorflow=={tf}, added/changed: {added}' if '+nv' not in tf or added else 0)" \
+    && python3 -c "import importlib.metadata as m, sys; from packaging.requirements import Requirement; \
+reqs = [r for r in map(Requirement, m.requires('tensorflow')) if r.marker is None or r.marker.evaluate({'extra': ''})]; \
+ver = lambda n: next((d.version for d in m.distributions() if d.metadata['Name'].lower().replace('_', '-') == n.lower().replace('_', '-')), None); \
+bad = [f'{r} (installed: {ver(r.name)})' for r in reqs if ver(r.name) is None or not r.specifier.contains(ver(r.name), prereleases=True)]; \
+sys.exit(f'TensorFlow requirements broken: {bad}' if bad else 0)" \
+    && python3 -c "import tensorflow as tf, keras; b = tf.sysconfig.get_build_info(); print('TensorFlow', tf.__version__, 'CUDA', b['cuda_version'], 'cuDNN', b['cudnn_version'], 'Keras', keras.__version__)" \
+    && vipsania --help > /dev/null
+
 CMD ["vipsania", "--help"]

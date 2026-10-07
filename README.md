@@ -64,13 +64,11 @@ working on an HPC cluster — use the pre-built image from Docker Hub:
           vipsania annotate Fungi /data/genome.fa -o /data/annotation.gff3 --finetune
 
 Drop `--gpus all` (Docker) or `--nv` (Singularity) for CPU-only runs. The
-image bundles TensorFlow's own CUDA libraries, so **no CUDA installation on
-the host is required** — only the NVIDIA driver for GPU runs. The image is
-`linux/amd64` only and works on NVIDIA GPUs up to the Hopper generation;
-**Blackwell GPUs (B200, RTX 50xx) are not yet supported**, because Vipsania
-needs `tensorflow<2.20`. Full details, including supported systems,
-model-cache persistence and training, are in
-[docs/container.md](/docs/container.md).
+image is based on NVIDIA's NGC TensorFlow container (TensorFlow 2.17 with
+CUDA 12.8), so **no CUDA installation on the host is required** — only an
+NVIDIA driver ≥ 570 for GPU runs. The image is `linux/amd64` only and also
+supports Blackwell GPUs (e.g. RTX PRO 6000, B200, RTX 50xx). Full details, including supported systems, model-cache
+persistence and training, are in [docs/container.md](/docs/container.md).
 
 ## Annotating a genome
 
@@ -183,6 +181,23 @@ annotations of the same genome or closely related species without finetuning aga
 
 All options of the annotation are listed in [docs/annotate.md](/docs/annotate.md), or with
 `vipsania annotate --help`.
+
+## Evidence integration (Paludamentum)
+
+[Paludamentum](https://github.com/Gaius-Augustus/Paludamentum) is the Nextflow pipeline around the
+gene finders of the Gaius-Augustus family. With Vipsania as gene finder it splits the genome, runs
+`vipsania annotate` on several GPUs in parallel, and, if you give it proteins, RNA-Seq or Iso-Seq,
+derives high-confidence genes from that evidence and merges them with the Vipsania prediction.
+Vipsania is a git submodule of Paludamentum; the `vipsania` command itself does not run the
+pipeline.
+
+    $ git clone --recursive https://github.com/Gaius-Augustus/Paludamentum
+    $ cd Paludamentum && pip install .
+    $ paludamentum --genefinder vipsania --nf_config slurm_generic --genome genome.fa --model Fungi \
+          --proteins proteins.faa
+
+Finetuning is off in the pipeline by default; `--finetune` switches it on and then runs one
+Vipsania task on the whole genome. See [docs/pipeline.md](/docs/pipeline.md).
 
 ## Training
 

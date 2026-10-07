@@ -40,7 +40,7 @@ RUN python3 -m pip install --no-cache-dir --upgrade "keras>=3,<4"
 
 LABEL org.opencontainers.image.title="Vipsania" \
       org.opencontainers.image.description="Unsupervised deep-learning ab-initio gene finder for eukaryotic genomes" \
-      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.version="1.0.2" \
       org.opencontainers.image.source="https://github.com/gaius-augustus/vipsania" \
       org.opencontainers.image.authors="Richard Krieg <irkri@irkri.net>, Mario Stanke <mario.stanke@uni-greifswald.de>" \
       org.opencontainers.image.licenses="MIT"
@@ -63,7 +63,7 @@ COPY . /opt/vipsania/
 # on top of the NGC stack. So Vipsania and the TF-dependent packages are
 # installed without dependencies and the remaining ones explicitly.
 # protobuf<5: TensorFlow 2.17 needs it; recent wandb would pull protobuf 7.
-RUN python3 -m pip install --no-cache-dir --no-deps . "bricks2marble>=0.1.1" hidten \
+RUN python3 -m pip install --no-cache-dir --no-deps . "bricks2marble>=0.1.2" hidten \
     && python3 -m pip install --no-cache-dir numpy pydantic wandb "protobuf<5"
 
 # ── Model cache ────────────────────────────────────────────────────────────

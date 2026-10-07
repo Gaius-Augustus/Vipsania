@@ -41,8 +41,13 @@ def embed_model(
 
     import vipsania
 
-    from .annotate import _estimate_max_batch_size
-    from .device import report_devices
+    from .device import (
+        estimate_max_batch_size,
+        free_gpu_memory,
+        report_devices,
+    )
+    # measured before TensorFlow allocates anything on the GPU
+    free_memory = free_gpu_memory()
     report_devices()
 
     V = vipsania.create_model(
@@ -71,7 +76,8 @@ def embed_model(
     lru_tree_depth = (T - 1).bit_length()
     V.set_options(parallel=parallel, tree_depth=lru_tree_depth)
 
-    if B == -1: B = _estimate_max_batch_size(T, V.count_params())
+    if B == -1:
+        B = estimate_max_batch_size(T, V.count_params(), free_memory)
 
     from ..embed import _as_list, _resolve_positions
     positions = _resolve_positions(

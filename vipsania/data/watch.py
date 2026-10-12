@@ -26,6 +26,10 @@ any repeats is always kept. The width ``sigma`` is a hyperparameter;
 not a hyperparameter but is estimated from the genome itself, as a
 quantile of the content score the sampler actually observes, and is
 refined while the training runs.
+
+The curve can be lifted by a floor ``m`` to ``m + (1 - m) a(x)``, which
+mixes a uniform sample of the whole genome into the training, for
+genomes where the curve keeps only one end of a wide distribution.
 """
 
 import math
@@ -73,6 +77,18 @@ class RepeatSamplingConfig(BaseModel):
     repeat content differ by 0.04 locus F1, and the difference is that
     17.8% of what the curve keeps is above 50% repeat. ``0`` makes the
     curve a hard threshold at the center, ``None`` leaves the tail on."""
+
+    min_acceptance: float = 0.0
+    """Every chunk is kept with at least this probability, whatever its
+    content and past the cut-off as well, so that the curve becomes
+    ``min_acceptance + (1 - min_acceptance) * a(x)``. This mixes a
+    uniform sample of the whole genome into the training, which matters
+    where the curve keeps only one end of a wide distribution: on maize
+    it keeps 7% of the chunks, which hold 31% of the genes, while the 79%
+    of chunks above 50% repeat hold 35% of them and are never trained
+    on. At 0.01 those make up 9.5% of what maize trains on; on the other
+    test genomes the keep rate moves by less than a point. Chunks past
+    `upper_limit_N` stay dropped."""
 
     upper_limit_N: float = 0.5
     """Chunks with a larger ``N`` fraction than this are always dropped,
@@ -297,6 +313,16 @@ class RepeatSamplingWatcher:
                     )) / norm
                 else:
                     a = tf.cast(x <= mu, tf.float32)
+                if self.config.cut_sigmas is not None:
+                    a = tf.where(
+                        x <= mu + self.config.cut_sigmas * self.config.sigma,
+                        a, tf.zeros_like(a),
+                    )
+                # the floor applies past the cut-off as well, otherwise it
+                # could not reach the bulk of a repeat-rich genome
+                if self.config.min_acceptance > 0:
+                    m = self.config.min_acceptance
+                    a = m + (1.0 - m) * a
                 # a stateless draw keyed on the running count, so that the
                 # decisions do not repeat and stay independent of how many
                 # threads the pipeline happens to use
@@ -309,11 +335,6 @@ class RepeatSamplingWatcher:
                 keep = tf.logical_and(
                     u < a, unassembled <= self.config.upper_limit_N,
                 )
-                if self.config.cut_sigmas is not None:
-                    keep = tf.logical_and(
-                        keep,
-                        x <= mu + self.config.cut_sigmas * self.config.sigma,
-                    )
             f = tf.cast(keep, tf.float32)
             kept = self._kept.scatter_nd_add(
                 tf.reshape(g, (1, 1)), tf.reshape(f, (1,)),

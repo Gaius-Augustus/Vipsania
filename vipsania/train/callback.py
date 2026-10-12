@@ -531,7 +531,12 @@ class SamplingMonitor(tf.keras.callbacks.Callback):
                 f"{config.floor:.0%} to start with\n[repeat sampling] sigma "
                 f"{config.sigma}, refined every {config.refine_every:,} "
                 f"sequences, and given up only where fewer than "
-                f"{config.quantile:.0%} would pass\n",
+                f"{config.quantile:.0%} would pass"
+                + (
+                    f"\n[repeat sampling] every sequence is kept with at "
+                    f"least {config.min_acceptance:.1%}"
+                    if config.min_acceptance > 0 else ""
+                ) + "\n",
                 file=sys.stderr, flush=True,
             )
         if self.interval <= 0:

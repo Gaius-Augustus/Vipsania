@@ -5,10 +5,13 @@ from typing import Literal
 
 import bricks2marble as b2m
 import numpy as np
+import tensorflow as tf
+from bricks2marble.struct.fasta import one_hot
 from hidten import HMMMode
 
+from .data.mask import pseudo_mask
 from .model.base import Vipsania
-from .xai.evaluate import predict_sequence
+from .xai.evaluate import model_call
 
 
 def _fix_intron_state_chain_labels(a: np.ndarray, isc: int) -> np.ndarray:
@@ -30,16 +33,26 @@ def _evaluate(
     jit_compile: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
     B = int(np.floor(B_ref_T[0] * B_ref_T[1] / fasta.T))
+    # encode nucleotides to float32 only on demand
+    nuc = fasta.nuc
+    labels = None
     model.toggle_inference(HMMMode[use], hmm=hmm, enable=True)
-    labels = predict_sequence(
-        model,
-        fasta,
-        B=B,
-        return_batched=True,
-        N_token=N_token,
-        repeats_input=repeats_input,
-        jit_compile=jit_compile,
-    ).numpy()  # type: ignore
+    for start in range(0, len(nuc), B):
+        batch = nuc[start:start+B]
+        size = len(batch)
+        # stick to one batch size; even at the end of a sequence (fill)
+        if size < B:
+            batch = np.concatenate(
+                [batch, np.repeat(batch[-1:], B - size, axis=0)],
+            )
+        x = pseudo_mask(tf.convert_to_tensor(
+            one_hot(batch, repeats=repeats_input, N=N_token),
+            dtype=tf.float32,
+        ))
+        y = (model_call(model, x) if jit_compile else model(x)).numpy()
+        if labels is None:
+            labels = np.empty((len(nuc), ) + y.shape[1:], dtype=y.dtype)
+        labels[start:start+size] = y[:size]
     model.toggle_inference(HMMMode[use], hmm=hmm, enable=False)
     H = labels.shape[2] // 2
     labels_f = labels[:, :, hmm_head]

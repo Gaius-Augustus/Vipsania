@@ -1,75 +1,10 @@
 import argparse
 import math
 import os
-import shutil
-import subprocess
 from collections.abc import Sequence
 from pathlib import Path
 from timeit import default_timer as clock
 from typing import Literal
-
-
-def _get_available_memory(gpu_index: int = 0) -> float:
-    error = (
-        "Unable to determine available GPU memory using nvidia-smi. "
-        "Specify the batch size manually using '-B' or '--finetune_B'"
-    )
-    if shutil.which("nvidia-smi") is None: raise RuntimeError(error)
-
-    try:
-        result = subprocess.run([
-                "nvidia-smi",
-                f"--id={gpu_index}",
-                "--query-gpu=memory.total",
-                "--format=csv,noheader,nounits",
-        ], capture_output=True, text=True, timeout=10, check=True)
-    except Exception as e: raise RuntimeError(error) from e
-
-    output = result.stdout.strip()
-    if not output: raise RuntimeError(error)
-
-    try:
-        free_mib = float(output.splitlines()[0].strip())
-    except ValueError as e:
-        raise RuntimeError(error) from e
-    return free_mib / 1024
-
-
-def _estimate_max_batch_size(
-    context_length: int,
-    model_size_params: int,
-    available_memory_gb: float | None = None,
-    gpu_index: int = 0,
-    safety_factor: float = 0.9,
-    finetune: bool = False,
-) -> int:
-    A = 3.535714285714286e-6 / 14_384_704
-    if not finetune:
-        # Calibration for 80GB GPU, 25M model, 200k context:
-        #   -> batch size: 32
-        # Calibration for 24GB GPU, 10M model, 200k context:
-        #   -> batch size: 14
-        B = 1.125e-5 - 25_047_166 * A
-    else:
-        # Calibration for 80GB GPU, 25M model, 200k context:
-        #   -> batch size: 4
-        # Calibration for 90GB GPU, 25M model, 200k context:
-        #   -> batch size: 8
-        # Calibration for 24GB GPU, 10M model, 200k context:
-        #   -> batch size: 2
-        B = 5.0625e-5 - 25_047_166 * A
-
-    if available_memory_gb is None:
-        available_memory_gb = _get_available_memory(gpu_index=gpu_index)
-
-    usable = safety_factor * available_memory_gb
-    cost_per_sample = context_length * (A * model_size_params + B)
-
-    raw_max_batch = usable / cost_per_sample + 1e-9
-    if finetune:
-        for divisor in (64, 32, 16, 8, 4, 2, 1):
-            if divisor <= raw_max_batch: return divisor
-    return max(1, int(raw_max_batch))
 
 
 def annotate_model(
@@ -107,6 +42,7 @@ def annotate_model(
     finetune_override: list[str] | None = None,
     progress_bar: bool = False,
     jit_compile: bool = True,
+    translation_table: int | None = None,
 ) -> None:
     os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
 
@@ -127,7 +63,11 @@ def annotate_model(
 
     import vipsania
 
-    from .device import report_devices
+    from .device import (estimate_max_batch_size, free_gpu_memory,
+                         report_devices)
+
+    # measured before TensorFlow allocates anything on the GPU
+    free_memory = free_gpu_memory()
     report_devices()
 
     if finetune:
@@ -144,9 +84,10 @@ def annotate_model(
                     "repeats_emitter": penalize_coding_repeats,
                     "repeats_at_borders": penalize_coding_border_repeats,
                 }}},
+                translation_table=translation_table,
             )
-            finetune_B = _estimate_max_batch_size(
-                T, V.count_params(), finetune=True,
+            finetune_B = estimate_max_batch_size(
+                T, V.count_params(), free_memory, finetune=True,
             )
             import gc
 
@@ -230,6 +171,7 @@ def annotate_model(
                 "repeats_emitter": penalize_coding_repeats,
                 "repeats_at_borders": penalize_coding_border_repeats,
             }}},
+            translation_table=translation_table,
         )
 
     T_re = int(2*T*reprediction_factor)
@@ -242,7 +184,9 @@ def annotate_model(
     lru_tree_depth = (T - 1).bit_length() - 1
     V.set_options(parallel=parallel, tree_depth=lru_tree_depth)
 
-    if B == -1: B = _estimate_max_batch_size(T, V.count_params())
+    if B == -1: B = estimate_max_batch_size(T, V.count_params(), free_memory)
+    if translation_table is None:
+        translation_table = V.config.hmm.translation_table
 
     vipsania.annotate_genome(
         V,
@@ -280,6 +224,7 @@ def annotate_model(
         ]) + [
             f"| time: {finetune_time/60:.2f} minutes"
         ],
+        translation_table=translation_table,
     )
 
 
@@ -350,6 +295,14 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         "--weights",
         default="latest_checkpoint.weights.h5",
         type=str,
+    )
+    common.add_argument(
+        "--translation_table",
+        help="number of the NCBI translation table the model was trained "
+             "with; taken from the model itself if not given, and a different "
+             "one is refused, as the genetic code is part of the weights",
+        default=None,
+        type=int,
     )
 
     finetuning = parser.add_argument_group("finetuning")
@@ -562,6 +515,7 @@ def run(args: argparse.Namespace) -> None:
         finetune_override=args.finetune_override,
         progress_bar=args.progress_bar,
         jit_compile=not args.nojit,
+        translation_table=args.translation_table,
     )
 
 

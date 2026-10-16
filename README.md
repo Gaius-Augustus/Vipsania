@@ -42,6 +42,34 @@ Installing Vipsania pulls in [bricks2marble](https://github.com/gaius-augustus/b
 support. A GPU is strongly recommended; annotating a large genome on CPU only is possible, but
 slow.
 
+### Container images (Docker / Singularity)
+
+If you prefer not to install Python dependencies locally — or if you are
+working on an HPC cluster — use the pre-built image from Docker Hub:
+
+**Docker** (requires `sudo` unless your user is in the `docker` group):
+
+    $ sudo docker pull gaiusaugustus/vipsania:latest
+    $ sudo docker run --rm --gpus all \
+          -v /path/to/data:/data \
+          gaiusaugustus/vipsania \
+          vipsania annotate Fungi genome.fa -o annotation.gff3 --finetune
+
+**Singularity / Apptainer** (no root needed, suited for HPC):
+
+    $ singularity pull vipsania.sif docker://gaiusaugustus/vipsania:latest
+    $ singularity exec --nv \
+          -B /path/to/data:/data \
+          vipsania.sif \
+          vipsania annotate Fungi /data/genome.fa -o /data/annotation.gff3 --finetune
+
+Drop `--gpus all` (Docker) or `--nv` (Singularity) for CPU-only runs. The
+image is based on NVIDIA's NGC TensorFlow container (TensorFlow 2.17 with
+CUDA 12.8), so **no CUDA installation on the host is required** — only an
+NVIDIA driver ≥ 570 for GPU runs. The image is `linux/amd64` only and also
+supports Blackwell GPUs (e.g. RTX PRO 6000, B200, RTX 50xx). Full details, including supported systems, model-cache
+persistence and training, are in [docs/container.md](/docs/container.md).
+
 ## Annotating a genome
 
 Annotation is done with `vipsania annotate`. It needs a trained model and a FASTA file of the
@@ -153,6 +181,23 @@ annotations of the same genome or closely related species without finetuning aga
 
 All options of the annotation are listed in [docs/annotate.md](/docs/annotate.md), or with
 `vipsania annotate --help`.
+
+## Evidence integration (Paludamentum)
+
+[Paludamentum](https://github.com/Gaius-Augustus/Paludamentum) is the Nextflow pipeline around the
+gene finders of the Gaius-Augustus family. With Vipsania as gene finder it splits the genome, runs
+`vipsania annotate` on several GPUs in parallel, and, if you give it proteins, RNA-Seq or Iso-Seq,
+derives high-confidence genes from that evidence and merges them with the Vipsania prediction.
+Vipsania is a git submodule of Paludamentum; the `vipsania` command itself does not run the
+pipeline.
+
+    $ git clone --recursive https://github.com/Gaius-Augustus/Paludamentum
+    $ cd Paludamentum && pip install .
+    $ paludamentum --genefinder vipsania --nf_config slurm_generic --genome genome.fa --model Fungi \
+          --proteins proteins.faa
+
+Finetuning is off in the pipeline by default; `--finetune` switches it on and then runs one
+Vipsania task on the whole genome. See [docs/pipeline.md](/docs/pipeline.md).
 
 ## Training
 

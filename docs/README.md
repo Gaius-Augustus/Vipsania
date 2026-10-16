@@ -5,10 +5,13 @@ These pages go into detail.
 
 | page | contents |
 | ---- | -------- |
-| [annotate.md](/docs/annotate.md) | options of `vipsania annotate`, notes on repeat masking |
+| [annotate.md](/docs/annotate.md) | options of `vipsania annotate`, non-standard genetic codes, notes on repeat masking |
+| [embed.md](/docs/embed.md) | options of `vipsania embed`, reading the residual stream of a model |
 | [training.md](/docs/training.md) | training on your own genomes, continuing from a published model, GPU memory, non-standard genetic codes |
 | [download.md](/docs/download.md) | where models are stored, fetching them in advance |
+| [container.md](/docs/container.md) | running Vipsania with Docker or Singularity/Apptainer, with and without GPU |
 | [troubleshooting.md](/docs/troubleshooting.md) | what to check when no GPU is found |
+| [pipeline.md](/docs/pipeline.md) | Vipsania inside the Paludamentum evidence integration pipeline (multi-GPU runs, proteins, RNA-Seq, Iso-Seq) |
 | [example](/docs/example) | a chromosome and the annotation Vipsania produced for it, to test an installation |
 
 Two tables record which species were involved in each model:
@@ -37,9 +40,10 @@ prediction reaches a locus sensitivity of 57% and a precision of 53.5%, measured
 
 ## CLI
 
-Installing Vipsania provides the `vipsania` command with three subcommands:
+Installing Vipsania provides the `vipsania` command with four subcommands:
 
 - `vipsania annotate` — annotate a genome with a trained model.
+- `vipsania embed` — write the residual stream of a model for every nucleotide of a fasta file.
 - `vipsania train` — train a new model from scratch or resume a prior training run.
 - `vipsania download` — fetch a pretrained model ahead of time, which annotation otherwise does
   by itself.

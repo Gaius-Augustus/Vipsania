@@ -64,6 +64,24 @@ def _evaluate(
     return labels_f, labels_b
 
 
+def _peak_gpu_memory() -> list[str]:
+    """Report the peak memory TensorFlow allocated on each GPU of this
+    process so far.
+    """
+    try:
+        peaks = [
+            tf.config.experimental.get_memory_info(gpu.name)["peak"]
+            for gpu in tf.config.list_logical_devices("GPU")
+        ]
+    # not every allocator keeps statistics, which isn't worth a failed run
+    except ValueError: return []
+    if not peaks: return []
+    return [
+        "peak GPU memory: "
+        + ", ".join(f"{peak / 1024**3:.2f} GiB" for peak in peaks)
+    ]
+
+
 def annotate_genome(
     model: Vipsania,
     fasta: Path | str,
@@ -88,6 +106,7 @@ def annotate_genome(
     coding_sequence: str | None = None,
     jit_compile: bool = False,
     logs: list[str] | None = None,
+    translation_table: int | None = None,
 ) -> None:
 
     def post(
@@ -95,7 +114,12 @@ def annotate_genome(
         annotation: b2m.struct.Annotation,
     ) -> b2m.struct.Annotation:
         b2m.tools.check_min_coding_length(annotation, length=9, remove=True)
-        b2m.tools.check_inframe_stop_codons(annotation, fasta, remove=True)
+        b2m.tools.check_inframe_stop_codons(
+            annotation,
+            fasta,
+            remove=True,
+            translation_table=translation_table,
+        )
         if protein_sequence is not None:
             annotation.sequence_to_file(
                 "protein",
@@ -103,6 +127,7 @@ def annotate_genome(
                 protein_sequence,
                 line_width=80,
                 mode="a",
+                translation_table=translation_table,
             )
         if coding_sequence is not None:
             annotation.sequence_to_file(
@@ -143,4 +168,5 @@ def annotate_genome(
             f"Vipsania total parameters: {model.count_params()}",
             f"batch size for maximal chunk length: {B}",
         ] + (logs if logs is not None else []),
+        log_summary=_peak_gpu_memory,
     )

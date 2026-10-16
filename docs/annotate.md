@@ -4,18 +4,30 @@
 
 ## Common options
 
-| option               | meaning                                                              |
-| -------------------- | -------------------------------------------------------------------- |
-| `-o`, `--output`     | output file; the suffix selects the format                            |
-| `-T`, `--context`    | genome context length in nucleotides, defaults to `200_000`           |
-| `-B`, `--batch_size` | batch size; inferred from the available GPU memory by default         |
-| `-i`, `--include`    | only annotate the named sequences                                     |
-| `-e`, `--exclude`    | skip the named sequences                                              |
-| `--model_dir`        | directory containing the model folder; skips the automatic download   |
-| `--weights`          | file name of the weights inside the model folder                      |
-| `--keep_seqnames`    | do not strip sequence names at the first whitespace character         |
-| `--protein`          | also write the protein sequences of all predicted genes to this file  |
-| `--coding`           | also write the coding sequences of all predicted genes to this file   |
+| option                | meaning                                                              |
+| --------------------- | -------------------------------------------------------------------- |
+| `-o`, `--output`      | output file; the suffix selects the format                            |
+| `-T`, `--context`     | genome context length in nucleotides, defaults to `200_000`           |
+| `-B`, `--batch_size`  | batch size; inferred from the available GPU memory by default         |
+| `-i`, `--include`     | only annotate the named sequences                                     |
+| `-e`, `--exclude`     | skip the named sequences                                              |
+| `--model_dir`         | directory containing the model folder; skips the automatic download   |
+| `--weights`           | file name of the weights inside the model folder                      |
+| `--keep_seqnames`     | do not strip sequence names at the first whitespace character         |
+| `--protein`           | also write the protein sequences of all predicted genes to this file  |
+| `--coding`            | also write the coding sequences of all predicted genes to this file   |
+| `--translation_table` | NCBI translation table the model was trained with; see below          |
+
+## Species with a non-standard genetic code
+
+A model carries the genetic code it was trained with, so a genome that departs from the standard
+code is annotated by a model trained for that code, and nothing has to be said on the command line.
+The code decides three things at once: which codons the HMM may end a gene at, which predictions are
+discarded for holding an in-frame stop codon, and how `--protein` translates a coding sequence.
+
+`--translation_table` states which table that is meant to be. A table the model was not trained
+with is refused. How to train a model for another code is described in
+[training.md](/docs/training.md#species-with-a-non-standard-genetic-code); 
 
 ## Finetuning options
 

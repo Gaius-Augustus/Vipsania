@@ -152,6 +152,7 @@ def annotate_model(
             online=None,
             load_weight_name=weight_name,
             override_config=finetune_config,
+            translation_table=translation_table,
         )
         trainer.create_model()
         finetune_time = clock()

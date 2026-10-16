@@ -497,19 +497,14 @@ class TerminateOnNaNWithCheckpoint(tf.keras.callbacks.TerminateOnNaN):
 
 
 class SamplingMonitor(tf.keras.callbacks.Callback):
-    """Watches how many sequences the dataloader has to discard to fill
-    a batch and relaxes the repeat filter when the search for usable
-    sequences starts to dominate the runtime.
-
-    The check runs on a timer rather than per batch: when the filter is
-    far too strict, the first batch of an epoch can take minutes to
-    arrive, and that is exactly the situation that has to be noticed.
-    """
+    """Refines the repeat sampling while the training runs. A timer
+    triggers the refinement, because batches are rare when the sampling
+    is slow."""
 
     def __init__(
         self,
         watcher: RepeatSamplingWatcher,
-        interval: float = 30.0,
+        interval: float = 5.0,
     ) -> None:
         super().__init__()
         self.watcher = watcher
@@ -522,7 +517,7 @@ class SamplingMonitor(tf.keras.callbacks.Callback):
             self.watcher.check()
 
     def on_train_begin(self, logs=None) -> None:
-        self.watcher.reset()
+        self.watcher.progress_bar = self.params.get("verbose") == 1
         if self.interval <= 0:
             return
         self._stop.clear()

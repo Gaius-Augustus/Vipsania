@@ -139,6 +139,7 @@ def compile_model(
                 warmup_steps=ws,  # type: ignore
             )
 
+    gas = config.gradient_accumulation_steps
     optimizer = MultiLRAdamW(
         lr_multiplier=config.lr_multiplier,
         train_steps=config.train_steps,
@@ -148,7 +149,7 @@ def compile_model(
         beta_1=config.beta_1,
         beta_2=config.beta_2,
         clipnorm=config.gradient_clip_norm,
-        gradient_accumulation_steps=config.gradient_accumulation_steps,
+        gradient_accumulation_steps=gas if gas and gas > 1 else None,
     )
     optimizer.exclude_from_weight_decay(var_names=config.no_weight_decay)
     optimizer.build(model.trainable_variables)

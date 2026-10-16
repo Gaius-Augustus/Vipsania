@@ -1,80 +1,10 @@
 import argparse
 import math
 import os
-import shutil
-import subprocess
 from collections.abc import Sequence
 from pathlib import Path
 from timeit import default_timer as clock
 from typing import Literal
-
-
-def _get_available_memory(gpu_index: int = 0) -> float:
-    error = (
-        "Unable to determine available GPU memory using nvidia-smi. "
-        "Specify the batch size manually using '-B' or '--finetune_B'"
-    )
-    if shutil.which("nvidia-smi") is None: raise RuntimeError(error)
-
-    try:
-        result = subprocess.run([
-                "nvidia-smi",
-                f"--id={gpu_index}",
-                "--query-gpu=memory.total",
-                "--format=csv,noheader,nounits",
-        ], capture_output=True, text=True, timeout=10, check=True)
-    except Exception as e: raise RuntimeError(error) from e
-
-    output = result.stdout.strip()
-    if not output: raise RuntimeError(error)
-
-    try:
-        free_mib = float(output.splitlines()[0].strip())
-    except ValueError as e:
-        raise RuntimeError(error) from e
-    return free_mib / 1024
-
-
-def _estimate_max_batch_size(
-    context_length: int,
-    model_size_params: int,
-    available_memory_gb: float | None = None,
-    gpu_index: int = 0,
-    safety_factor: float = 0.9,
-    finetune: bool = False,
-) -> int:
-    A = 3.535714285714286e-6 / 14_384_704
-    if not finetune:
-        # Calibration for 80GB GPU, 25M model, 200k context:
-        #   -> batch size: 32
-        # Calibration for 24GB GPU, 10M model, 200k context:
-        #   -> batch size: 14
-        B = 1.125e-5 - 25_047_166 * A
-    else:
-        # Calibration for 80GB GPU, 25M model, 200k context:
-        #   -> batch size: 4
-        # Calibration for 90GB GPU, 25M model, 200k context:
-        #   -> batch size: 8
-        # Calibration for 24GB GPU, 10M model, 200k context:
-        #   -> batch size: 2
-        B = 5.0625e-5 - 25_047_166 * A
-
-    if available_memory_gb is None:
-        available_memory_gb = _get_available_memory(gpu_index=gpu_index)
-
-    usable = safety_factor * available_memory_gb
-    cost_per_sample = context_length * (A * model_size_params + B)
-
-    raw_max_batch = usable / cost_per_sample + 1e-9
-    if finetune:
-        for divisor in (64, 32, 16, 8, 4, 2, 1):
-            if divisor <= raw_max_batch: return divisor
-    return max(1, int(raw_max_batch))
-
-
-def _get_genome_size(fasta: str | Path) -> int:
-    import bricks2marble as b2m
-    return sum(x[3] for x in b2m.io.index(fasta))
 
 
 def annotate_model(
@@ -109,6 +39,8 @@ def annotate_model(
     N_token: Literal['track', 'uniform'] = "track",
     drop_repeats_threshold: float | None = None,
     relax_repeats: bool = False,
+    finetune_override: list[str] | None = None,
+    progress_bar: bool = False,
     jit_compile: bool = True,
     translation_table: int | None = None,
 ) -> None:
@@ -131,7 +63,11 @@ def annotate_model(
 
     import vipsania
 
-    from .device import report_devices
+    from .device import (estimate_max_batch_size, free_gpu_memory,
+                         report_devices)
+
+    # measured before TensorFlow allocates anything on the GPU
+    free_memory = free_gpu_memory()
     report_devices()
 
     if finetune:
@@ -150,8 +86,8 @@ def annotate_model(
                 }}},
                 translation_table=translation_table,
             )
-            finetune_B = _estimate_max_batch_size(
-                T, V.count_params(), finetune=True,
+            finetune_B = estimate_max_batch_size(
+                T, V.count_params(), free_memory, finetune=True,
             )
             import gc
 
@@ -165,11 +101,45 @@ def annotate_model(
                 "batch size for finetuning has to be < 64 and "
                 f"a divisor of 64; got {finetune_B}"
             )
+        # every genome is treated the same, whatever its size: the
+        # sampling adapts itself to the repeat content it finds, so a
+        # threshold that has to be guessed beforehand is not needed
+        adaptive = drop_repeats_threshold is None
         if drop_repeats_threshold is None:
-            drop_repeats_threshold = (
-                0.25 if _get_genome_size(fasta) >= 1e9 else 0.0
+            drop_repeats_threshold = 0.0
+        if relax_repeats:
+            print(
+                "--relax_repeats is not needed anymore: the repeat sampling "
+                "adapts itself to every genome by default."
             )
         gas = 64 // finetune_B
+        finetune_config = {
+            "dataset": {
+                "B": finetune_B,
+                "train_paths": [fasta],
+                "indexed_files": True,
+                "validation_paths": None,
+                "drop_repeats_threshold": drop_repeats_threshold,
+                "repeat_sampling": {} if adaptive else None,
+            },
+            "trainer": {
+                "train_steps": 100*gas,
+                "gradient_accumulation_steps": gas,
+                "epochs": finetune_epochs,
+                "lr": finetune_lr,
+                "warmup_steps": None,
+                "decay_steps": None,
+                "spliced_loss_schedule": None,
+                "hyperparameter_schedule": [],
+            },
+        }
+        if finetune_override:
+            finetune_config = vipsania.util.deep_update(
+                finetune_config,
+                vipsania.util.parse_overrides(list(finetune_override)),
+            )
+            print(f"Applied overrides to the finetuning: {finetune_override}")
+
         trainer = vipsania.Trainer(
             model,
             checkpoints_dir=output.parent,
@@ -178,30 +148,10 @@ def annotate_model(
             jit_compile=jit_compile,
             finetune=True,
             resume=False,
-            relax_repeats=relax_repeats,
-            verbose=True,
+            verbose=1 if progress_bar else 2,
             online=None,
             load_weight_name=weight_name,
-            override_config={
-                "dataset": {
-                    "B": finetune_B,
-                    "train_paths": [fasta],
-                    "indexed_files": True,
-                    "indexed_windows_at_once": 1,
-                    "validation_paths": None,
-                    "drop_repeats_threshold": drop_repeats_threshold,
-                },
-                "trainer": {
-                    "train_steps": 100*gas,
-                    "gradient_accumulation_steps": gas,
-                    "epochs": finetune_epochs,
-                    "lr": finetune_lr,
-                    "warmup_steps": None,
-                    "decay_steps": None,
-                    "spliced_loss_schedule": None,
-                    "hyperparameter_schedule": [],
-                },
-            },
+            override_config=finetune_config,
             translation_table=translation_table,
         )
         trainer.create_model()
@@ -235,9 +185,10 @@ def annotate_model(
     lru_tree_depth = (T - 1).bit_length() - 1
     V.set_options(parallel=parallel, tree_depth=lru_tree_depth)
 
-    if B == -1: B = _estimate_max_batch_size(T, V.count_params())
+    if B == -1: B = estimate_max_batch_size(T, V.count_params(), free_memory)
     if translation_table is None:
         translation_table = V.config.hmm.translation_table
+
     vipsania.annotate_genome(
         V,
         fasta,
@@ -266,10 +217,12 @@ def annotate_model(
             f"| learning rate: {finetune_lr}",
             f"| epochs: {finetune_epochs}",
         ] + ([
+            "| repeats: sampled by their content, adapted to the genome"
+        ] if adaptive else [
             f"| maximum repeats: {100*drop_repeats_threshold:.1f}%"
-        ] if drop_repeats_threshold is not None and drop_repeats_threshold > 0
-          else []
-        ) + [
+        ] if drop_repeats_threshold > 0 else [
+            "| repeats: trained on all sequences"
+        ]) + [
             f"| time: {finetune_time/60:.2f} minutes"
         ],
         translation_table=translation_table,
@@ -381,16 +334,31 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         type=int,
     )
     finetuning.add_argument(
-        "--relax_repeats",
-        help="allow more repeats when too few sequences pass the repeat "
-             "filter, instead of keeping the limit fixed",
+        "--progress_bar",
+        help="show a progress bar during finetuning instead of one line per "
+             "epoch",
         action="store_true",
     )
     finetuning.add_argument(
+        "--relax_repeats",
+        help="kept for compatibility; adapting the repeat sampling to the "
+             "genome is what happens by default now",
+        action="store_true",
+    )
+    finetuning.add_argument(
+        "-fo", "--finetune_override",
+        action="append",
+        default=[],
+        metavar="KEY=VALUE",
+        help="override an entry of the configuration the finetuning runs "
+             "with; repeatable, e.g. -fo dataset.repeat_sampling.sigma=0.05 "
+             "-fo trainer.epochs=5",
+    )
+    finetuning.add_argument(
         "--drop_repeats",
-        help="during finetuning, only train on sequences with low repeat "
-             "content; if not specified, will be inferred from the input "
-             "genome size",
+        help="during finetuning, discard every sequence whose repeat content "
+             "is above this fraction, instead of sampling by repeat and N "
+             "content; 0 trains on all sequences",
         default=None,
         type=float,
     )
@@ -545,6 +513,8 @@ def run(args: argparse.Namespace) -> None:
         N_token=args.N_token,
         drop_repeats_threshold=args.drop_repeats,
         relax_repeats=args.relax_repeats,
+        finetune_override=args.finetune_override,
+        progress_bar=args.progress_bar,
         jit_compile=not args.nojit,
         translation_table=args.translation_table,
     )

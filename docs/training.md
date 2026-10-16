@@ -77,8 +77,8 @@ it** — at the cost of holding that many windows in memory at once.
 | ------------------------------------- | --------------------------------------------------------- |
 | `dataset.T`                           | context length in nucleotides used during training         |
 | `dataset.B`                           | batch size; lower this first if you run out of GPU memory  |
-| `dataset.indexed_windows_at_once`     | number of windows, and therefore files, read in parallel; defaults to `1` |
-| `dataset.indexed_window_size`         | nucleotides read from a file in one go; defaults to `6_400_000` |
+| `dataset.indexed_windows_at_once`     | number of windows, and therefore files, read in parallel; defaults to `4` |
+| `dataset.indexed_window_size`         | nucleotides read from a file in one go; defaults to `3_200_000` |
 | `trainer.gradient_accumulation_steps` | raise this to keep the effective batch size when lowering `B` |
 | `trainer.epochs`                      | number of epochs                                           |
 | `trainer.train_steps`                 | number of batches per epoch                                |
@@ -204,7 +204,8 @@ continue from, by clade or by model ID:
 
 `--resume` picks the training up from the weights of that model instead of starting from scratch,
 and the override brings the settings that suit a continuation: a low learning rate, no warmup or
-decay, and no schedules. `--fork` copies the model into `finetuned_fungi` first and trains there,
+decay, no schedules, and the same sampling by repeat and `N` content as `--finetune`, adapted to
+each genome separately. `--fork` copies the model into `finetuned_fungi` first and trains there,
 so the model you started from stays exactly as it was and can be used or forked again at any time.
 It is downloaded on the way if you do not have it yet. The folder has to be new, and `--fork` only
 works together with `--resume`.

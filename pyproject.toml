@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vipsania"
-version = "1.0.2"
+version = "1.1.0"
 authors = [
   { name="Richard Krieg", email="irkri@irkri.net" },
   { name="Mario Stanke", email="mario.stanke@uni-greifswald.de" },
 ]
 description = "An unsupervised deep learning ab-initio gene finder."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 license = "MIT"
 license-files = ["LICENSE"]
 keywords = [
@@ -30,12 +30,11 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    "bricks2marble[tf]>=0.1.2",
+    "bricks2marble[tf]>=0.1.3",
     "tensorflow<2.20",
     "wandb"
 ]

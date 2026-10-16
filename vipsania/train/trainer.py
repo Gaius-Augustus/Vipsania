@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from wandb.integration.keras import WandbMetricsLogger
 
 from ..data import parallel_files, select_from_indexed_files
-from ..data.watch import RepeatSamplingWatcher
+from ..data.watch import RepeatSamplingConfig, RepeatSamplingWatcher
 from .callback import (AnnotationMetrics, AnnotationMetricsConfig,
                        EpochSummaryCallback, HyperparameterSchedule,
                        HyperparameterScheduleConfig, SamplingMonitor,
@@ -183,13 +183,12 @@ class Trainer:
         tf.data.Dataset, tf.data.Dataset | None
     ]:
         """Create training and validation dataset."""
-        self.watcher = None
-        if (self.relax_repeats
-            and self.config.dataset.drop_repeats_threshold > 0
-        ):
-            self.watcher = RepeatSamplingWatcher(
-                self.config.dataset.drop_repeats_threshold,
-            )
+        sampling = self.config.dataset.repeat_sampling
+        if sampling is None and self.relax_repeats:
+            sampling = RepeatSamplingConfig()
+        self.watcher = (
+            None if sampling is None else RepeatSamplingWatcher(sampling)
+        )
         if self.config.dataset.indexed_files:
             train_dataset = select_from_indexed_files(
                 self.config.dataset.train_paths,
@@ -309,7 +308,8 @@ class Trainer:
         callbacks.append(tf.keras.callbacks.ModelCheckpoint(
             str(self.path / "latest_checkpoint.weights.h5"),
             monitor='loss',
-            verbose=self.verbose,
+            # only next to the progress bar, not to the line per epoch
+            verbose=int(self.verbose == 1),
             save_best_only=False,
             save_weights_only=True,
         ))

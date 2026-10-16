@@ -25,6 +25,7 @@
 | `--finetune_epochs` | number of epochs to finetune, defaults to `10`                            |
 | `--finetune_lr`     | learning rate used for finetuning, defaults to `1e-4`                     |
 | `--finetune_B`      | batch size on the GPU; inferred from the available GPU memory by default  |
+| `--progress_bar`    | show a progress bar instead of one line per finetuning epoch              |
 | `--drop_repeats`    | finetune on sequences below a fixed repeat content instead               |
 | `-fo KEY=VALUE`     | override one entry of the finetuning configuration; repeatable            |
 

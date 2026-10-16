@@ -1,6 +1,5 @@
 import csv
 import json
-import sys
 import tempfile
 import threading
 from collections.abc import Sequence
@@ -496,15 +495,9 @@ class TerminateOnNaNWithCheckpoint(tf.keras.callbacks.TerminateOnNaN):
 
 
 class SamplingMonitor(tf.keras.callbacks.Callback):
-    """Refines the repeat content the dataloader samples by, while the
-    training runs.
-
-    The refinement happens after a fixed number of sampled sequences,
-    but it is triggered from a timer rather than from the end of a
-    batch: when the sampling is slow, batches are rare exactly when the
-    estimate is needed most, and the first batch of an epoch can take
-    minutes to arrive.
-    """
+    """Refines the repeat sampling while the training runs. A timer
+    triggers the refinement, because batches are rare when the sampling
+    is slow."""
 
     def __init__(
         self,
@@ -522,23 +515,7 @@ class SamplingMonitor(tf.keras.callbacks.Callback):
             self.watcher.check()
 
     def on_train_begin(self, logs=None) -> None:
-        self.watcher.reset()
-        config = self.watcher.config
-        if config.verbose:
-            print(
-                f"\n[repeat sampling] sequences are kept at a rate that "
-                f"falls with their repeat and N content, around "
-                f"{config.floor:.0%} to start with\n[repeat sampling] sigma "
-                f"{config.sigma}, refined every {config.refine_every:,} "
-                f"sequences, and given up only where fewer than "
-                f"{config.quantile:.0%} would pass"
-                + (
-                    f"\n[repeat sampling] every sequence is kept with at "
-                    f"least {config.min_acceptance:.1%}"
-                    if config.min_acceptance > 0 else ""
-                ) + "\n",
-                file=sys.stderr, flush=True,
-            )
+        self.watcher.progress_bar = self.params.get("verbose") == 1
         if self.interval <= 0:
             return
         self._stop.clear()

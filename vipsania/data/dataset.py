@@ -63,6 +63,19 @@ class DatasetConfig(BaseModel):
     model_config = {"extra": "forbid", "frozen": True}
 
 
+def _genome_names(files: Sequence[Path | str]) -> list[str]:
+    """The shortest end of each path that no other path shares."""
+    parts = [Path(f).parts for f in files]
+    names = []
+    for i, own in enumerate(parts):
+        for k in range(1, len(own) + 1):
+            if all(other[-k:] != own[-k:]
+                   for j, other in enumerate(parts) if j != i):
+                break
+        names.append(str(Path(*own[-k:])))
+    return names
+
+
 def parallel_files(
     files: Path | str | Sequence[Path | str],
     at_once: int,
@@ -82,7 +95,7 @@ def parallel_files(
 
     index_table = None
     if watcher is not None:
-        watcher.bind(len(files), names=[Path(f).name for f in files])
+        watcher.bind(len(files), names=_genome_names(files))
         # the interleave hands the loader a path and not the position of
         # that path in the list, so the genome index is looked up again
         index_table = tf.lookup.StaticHashTable(
@@ -194,7 +207,7 @@ def select_from_indexed_files(
         extra = []
 
     if watcher is not None:
-        watcher.bind(len(files), names=[Path(f).name for f in files])
+        watcher.bind(len(files), names=_genome_names(files))
 
     fastas = [b2m.io.indexed_fasta(file) for file in files]
     extras = [[f.parent/s for f in files] for s, _, _ in extra]

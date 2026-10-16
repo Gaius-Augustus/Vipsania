@@ -174,7 +174,8 @@ continue from, by clade or by model ID:
 
 `--resume` picks the training up from the weights of that model instead of starting from scratch,
 and the override brings the settings that suit a continuation: a low learning rate, no warmup or
-decay, and no schedules. `--fork` copies the model into `finetuned_fungi` first and trains there,
+decay, no schedules, and the same sampling by repeat and `N` content as `--finetune`, adapted to
+each genome separately. `--fork` copies the model into `finetuned_fungi` first and trains there,
 so the model you started from stays exactly as it was and can be used or forked again at any time.
 It is downloaded on the way if you do not have it yet. The folder has to be new, and `--fork` only
 works together with `--resume`.

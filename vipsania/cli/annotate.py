@@ -105,6 +105,7 @@ def annotate_model(
     drop_repeats_threshold: float | None = None,
     relax_repeats: bool = False,
     finetune_override: list[str] | None = None,
+    progress_bar: bool = False,
     jit_compile: bool = True,
 ) -> None:
     os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
@@ -206,7 +207,7 @@ def annotate_model(
             jit_compile=jit_compile,
             finetune=True,
             resume=False,
-            verbose=True,
+            verbose=1 if progress_bar else 2,
             online=None,
             load_weight_name=weight_name,
             override_config=finetune_config,
@@ -377,6 +378,12 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         help="number of epochs finetuning the model",
         default=10,
         type=int,
+    )
+    finetuning.add_argument(
+        "--progress_bar",
+        help="show a progress bar during finetuning instead of one line per "
+             "epoch",
+        action="store_true",
     )
     finetuning.add_argument(
         "--relax_repeats",
@@ -553,6 +560,7 @@ def run(args: argparse.Namespace) -> None:
         drop_repeats_threshold=args.drop_repeats,
         relax_repeats=args.relax_repeats,
         finetune_override=args.finetune_override,
+        progress_bar=args.progress_bar,
         jit_compile=not args.nojit,
     )
 

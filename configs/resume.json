@@ -6,7 +6,8 @@
         "B": 4,
         "indexed_files": true,
         "indexed_window_size": 3200000,
-        "indexed_windows_at_once": 4
+        "indexed_windows_at_once": 4,
+        "repeat_sampling": {}
     },
     "trainer": {
         "train_steps": 1600,

@@ -183,8 +183,8 @@ class Trainer:
         sampling = self.config.dataset.repeat_sampling
         if sampling is None and self.relax_repeats:
             sampling = RepeatSamplingConfig()
-        self.watcher = None if sampling is None else RepeatSamplingWatcher(
-            sampling, batch_size=self.config.dataset.B,
+        self.watcher = (
+            None if sampling is None else RepeatSamplingWatcher(sampling)
         )
         if self.config.dataset.indexed_files:
             train_dataset = select_from_indexed_files(
@@ -305,7 +305,8 @@ class Trainer:
         callbacks.append(tf.keras.callbacks.ModelCheckpoint(
             str(self.path / "latest_checkpoint.weights.h5"),
             monitor='loss',
-            verbose=self.verbose,
+            # only next to the progress bar, not to the line per epoch
+            verbose=int(self.verbose == 1),
             save_best_only=False,
             save_weights_only=True,
         ))

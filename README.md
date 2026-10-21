@@ -23,7 +23,7 @@ For you, this means:
 
 ## Installation
 
-Vipsania requires `python>=3.12`. It is recommended to install into a clean virtual environment
+Vipsania requires Python 3.12. It is recommended to install into a clean virtual environment
 (e.g. using `conda`, `pyenv` or `uv`).
 
     $ python -m pip install vipsania
@@ -41,6 +41,9 @@ Installing Vipsania pulls in [bricks2marble](https://github.com/gaius-augustus/b
 [hidten](https://github.com/gaius-augustus/hidten), which in turn install TensorFlow with CUDA
 support. A GPU is strongly recommended; annotating a large genome on CPU only is possible, but
 slow.
+
+On a fast connection, installing into a fresh environment takes about two minutes and 5 GB of disk
+space, mostly for the CUDA libraries.
 
 ### Container images (Docker / Singularity)
 
@@ -129,7 +132,8 @@ exactly such species. It has no clade name of its own; pass `Other` or its model
 
 The two F1 columns are the average locus F1 over the test species of that clade, measured against
 their reference annotations: the first with `--finetune`, the second with the pretrained model
-alone. Finetuning helps in almost every clade, which is why we recommend it.
+alone. Finetuning helps in almost every clade, which is why we recommend it. All results on the
+test species were produced with Vipsania 1.0.0.
 
 Whichever model you pick, finetuning it on your genome adapts it to your species — see
 [Finetuning](#finetuning-recommended).
